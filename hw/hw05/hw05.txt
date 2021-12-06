@@ -1,0 +1,698 @@
+The following program submission has been recorded:
+
+Student: jferlazz
+Class: CS159
+Section: 25336
+Assignment: hw05.c
+Submission: 2021-03-28 19:55
+
+If the above is incorrect, you are responsible for resubmitting the assignment or seeking assistance from a course staff member prior to the due date! Assignments will never be accepted by e-mail.
+
+If this is for a lab assignment, only one member must be designated to make a submission for the group.  Graders will not evaluate submissions from multiple group members to determine which effort you actually want graded.
+
+*** Please do not reply to this email ***
+
+The contents of the submission:
+     1	/***************************************************************************
+     2	*
+     3	*  Programmers and Purdue Email Addresses:
+     4	*  1. jferlazz@purdue.edu
+     5	*
+     6	*  Homework #: 5
+     7	*
+     8	*  Academic Integrity Statement:
+     9	*
+    10	*  We have not used source code obtained from any other unauthorized source,
+    11	*  either modified or unmodified.  Neither have we provided access to our code
+    12	*  to another. The effort we are submitting is our own original work.
+    13	*
+    14	*  Day, Time, Location of Lab: Friday, 2:30pm, HAMP 3144
+    15	*
+    16	*  Program Description:
+    17	*
+    18	*  This program takes user input on the desired each and the week occurence they
+    19	*  want to analyize and outputs the start of the week and end of the week
+    20	*  in date format and outputs a calendar with the desired week
+    21	*
+    22	***************************************************************************/
+    23	
+    24	#include <stdio.h>
+    25	
+    26	//Global Decloration
+    27	int inputYear(void);
+    28	int inputOccurrence(void);
+    29	int dayOfWeekLastYear(int);
+    30	int dayInYear(int);
+    31	int monthCalc(int, int, int*);
+    32	int leapYearCheck(int);
+    33	void output(int, int, int, int, int, int, int, int);
+    34	void dateOutput(int, int, int, int);
+    35	int findsYear2(int, int);
+    36	int findStartDay(int);
+    37	int findDayInMonth(int, int);
+    38	int incrimentDay(int, int);
+    39	
+    40	int main(void) 
+    41	{
+    42	  //Local Declaration
+    43	  int year1; //user entered year
+    44	  int year2; //year at the end of the week
+    45	  int occurrence; //occurrence number of that day that year
+    46	  int lastDay; //Day of the week that last year ended on
+    47	  int totalDays; //number of days into the year the desired day is
+    48	  int monthVal1; //The month of the start of the week 1 is January 2 is febuary etc
+    49	  int monthVal2; //The month of the end of the week
+    50	  int dayOfMonth1; //The day in the month of the start of the week
+    51	  int dayOfMonth2; //The day in the month of the end of the week
+    52	  int isLeapYear; //1 if it is a leap year, 0 if not
+    53	  int startDay; //The day of the week the week starts at
+    54	
+    55	  //Executable statements
+    56	
+    57	  //Prompts user for input
+    58	  year1 = inputYear();
+    59	  occurrence = inputOccurrence();
+    60	  
+    61	  //Calculates important day related values
+    62	  lastDay = dayOfWeekLastYear(year1);
+    63	  startDay = findStartDay(lastDay);
+    64	  totalDays = dayInYear(occurrence);
+    65	
+    66	  //Leap year check
+    67	  isLeapYear = leapYearCheck(year1);
+    68	
+    69	  //Finds if the day at the end of the week is in another year or not
+    70	  year2 = year1 + findsYear2(isLeapYear, totalDays);
+    71	
+    72	  //Calculates important month related values
+    73	  monthVal2 = monthCalc(isLeapYear, totalDays, &dayOfMonth2);
+    74	  monthVal1 = monthCalc(isLeapYear, totalDays - 6, &dayOfMonth1);
+    75	
+    76	  //Outputs data
+    77	  output(startDay, monthVal1, monthVal2, dayOfMonth1, dayOfMonth2, isLeapYear, year1, year2);
+    78	  
+    79	  return 0;
+    80	}
+    81	
+    82	/***************************************************************************
+    83	*
+    84	*  Function Information
+    85	*
+    86	*  Name of Function: inputYear
+    87	*
+    88	*  Function Return Type: int
+    89	*
+    90	*  Parameters (list data type, name, and comment one per line):
+    91	*    1. NA
+    92	*
+    93	*  Function Description: This function allows the user to input the desired
+    94	*  year
+    95	*
+    96	***************************************************************************/
+    97	int inputYear()
+    98	{
+    99	  int year; //user input for the year
+   100	  
+   101	  //prints a statement to prompts for the year number
+   102	  printf("Enter Year Number -> ");
+   103	  scanf("%d", &year);
+   104	  
+   105	  return(year);
+   106	}
+   107	
+   108	/***************************************************************************
+   109	*
+   110	*  Function Information
+   111	*
+   112	*  Name of Function: inputYear
+   113	*
+   114	*  Function Return Type: int
+   115	*
+   116	*  Parameters (list data type, name, and comment one per line):
+   117	*    1. NA
+   118	*
+   119	*  Function Description: This function allows the user to input the desired
+   120	*  occurrence number
+   121	*
+   122	***************************************************************************/
+   123	int inputOccurrence()
+   124	{
+   125	  int occurrence; //user input for the occurrence number
+   126	  
+   127	  //prints a statement to prompt for occurences
+   128	  printf("Enter occurrence number -> ");
+   129	  scanf("%d", &occurrence);
+   130	  
+   131	  return(occurrence);
+   132	}
+   133	
+   134	/***************************************************************************
+   135	*
+   136	*  Function Information
+   137	*
+   138	*  Name of Function: dayOfWeekLastYear
+   139	*
+   140	*  Function Return Type: int
+   141	*
+   142	*  Parameters (list data type, name, and comment one per line):
+   143	*    1. int year the desired year entered by the user
+   144	*
+   145	*  Function Description: This function calculates the weekday the last year ended on
+   146	*
+   147	***************************************************************************/
+   148	int dayOfWeekLastYear(int year)
+   149	{
+   150	  return(((year - 1) * 365 + ((year - 1) / 4) - ((year - 1) / 100) + ((year - 1) / 400)) % 7);
+   151	}
+   152	
+   153	/***************************************************************************
+   154	*
+   155	*  Function Information
+   156	*
+   157	*  Name of Function: incrementdatMo
+   158	*
+   159	*  Function Return Type: int
+   160	*
+   161	*  Parameters (list data type, name, and comment one per line):
+   162	*    1. int dayOfMonth //Day to incriment
+   163	*    2. int daysInMonth //The number of days in the month
+   164	*
+   165	*  Function Description: This function incriments the date and resets it to 1
+   166	*  if it occurs in a new month
+   167	*
+   168	***************************************************************************/
+   169	int incrementDate(int dayOfMonth, int daysInMonth)
+   170	{
+   171	  int newDay; //New day after incriment
+   172	  newDay = dayOfMonth + 1;
+   173	  
+   174	  if (newDay > daysInMonth) //If the new day is in another month
+   175	  {
+   176	    newDay = 1;
+   177	  }
+   178	
+   179	  return(newDay);
+   180	}
+   181	
+   182	/***************************************************************************
+   183	*
+   184	*  Function Information
+   185	*
+   186	*  Name of Function: dayInYear
+   187	*
+   188	*  Function Return Type: int
+   189	*
+   190	*  Parameters (list data type, name, and comment one per line):
+   191	*    1. int lastDay the weekday the last year ended on
+   192	*    2. int day the weekday of the desired day
+   193	*    3. int occurrence the desired occurrence of the day
+   194	*
+   195	*  Function Description: This function calculates how many days the desire weekday
+   196	*  on the desired year and occurence is into the year (example if the day is 50 days into
+   197	*  the year 50 is returned)
+   198	*
+   199	***************************************************************************/
+   200	int dayInYear(int occurrence)
+   201	{
+   202	  int totalDays; //number of days into the year
+   203	  
+   204	  totalDays = (occurrence) * 7; //Each week is 7 days
+   205	
+   206	  return(totalDays);
+   207	}
+   208	
+   209	/***************************************************************************
+   210	*
+   211	*  Function Information
+   212	*
+   213	*  Name of Function: leapYearCheck
+   214	*
+   215	*  Function Return Type: int
+   216	*
+   217	*  Parameters (list data type, name, and comment one per line):
+   218	*    1. int year the desired year enter by the user
+   219	*
+   220	*  Function Description: This function checks to see if the entered year is a leap
+   221	*  year or not (returns 1 (true) if it is, 0 (false) if not) a leap year is a year divisable by 4
+   222	*  and if the year is divisable by 100 it must also be divisable by 400
+   223	*
+   224	***************************************************************************/
+   225	int leapYearCheck(int year)
+   226	{
+   227	  int isLeapYear; //1 is a leap year 0 if not
+   228	  
+   229	  if(year % 4 == 0)
+   230	  {
+   231	    if(year % 100 == 0)
+   232	    {
+   233	      if(year % 400 == 0)
+   234	      {
+   235	        isLeapYear = 1; //Century leap years that are divisable by 400 ie 2000 (is a leap year)
+   236	      }
+   237	      else
+   238	      {
+   239	        isLeapYear = 0; //Turn of the centurys not divisable by 400 ie 1900 (is NOT a leap year)
+   240	      }
+   241	    }
+   242	    else
+   243	    {
+   244	      isLeapYear = 1; //normal leap years not at the beginning of a century ie 2004
+   245	    }
+   246	  }
+   247	  else
+   248	  {
+   249	    isLeapYear = 0; //not a leap year
+   250	  }
+   251	  
+   252	  return(isLeapYear);
+   253	}
+   254	
+   255	/***************************************************************************
+   256	*
+   257	*  Function Information
+   258	*
+   259	*  Name of Function: findsYear2
+   260	*
+   261	*  Function Return Type: int
+   262	*
+   263	*  Parameters (list data type, name, and comment one per line):
+   264	*    1. int isLeapYear whether or not the year entered by the user is a leap year or not
+   265	*    2. int totalDays how many days into the entered year the desired day is calculated by dayInYear
+   266	*
+   267	*  Function Description: This function calculates if the end of the week occurs in another year return
+   268	*  1 (true) if it does and 0 (false) if it does not
+   269	*
+   270	***************************************************************************/
+   271	int findsYear2(int isLeapYear, int totalDays)
+   272	{
+   273	  return(totalDays > 365 + isLeapYear);
+   274	}
+   275	/***************************************************************************
+   276	*
+   277	*  Function Information
+   278	*
+   279	*  Name of Function: monthCalc
+   280	*
+   281	*  Function Return Type: int
+   282	*
+   283	*  Parameters (list data type, name, and comment one per line):
+   284	*    1. int isLeapYear whether or not the year entered by the user is a leap year or not
+   285	*    2. int totalDays how many days into the entered year the desired day is calculated by dayInYear
+   286	*    3. int *dayOfMonth the day of the month the desired day is on (1-31) passed by address
+   287	*
+   288	*  Function Description: This function calculates what month the desired day in is and returns it
+   289	*  it also calculates the day in that month the desired date occurs and passes that back by address
+   290	*  this takes into account if the day occurs on another year
+   291	*
+   292	***************************************************************************/
+   293	int monthCalc(int isLeapYear, int totalDays, int *dayOfMonth)
+   294	{
+   295	  int monthVal; //The month of the desired data 1 is January 2 is febuary etc
+   296	  
+   297	  if (totalDays <= 31) //January
+   298	  {
+   299	    *dayOfMonth = totalDays;
+   300	    monthVal = 1;
+   301	  }
+   302	  else if (totalDays <= 59 + isLeapYear && !(isLeapYear)) //Febuary not on leap year
+   303	  {
+   304	    *dayOfMonth = totalDays - 31;
+   305	    monthVal = 2;
+   306	  }
+   307	  else if (totalDays <= 59  + isLeapYear && isLeapYear) //Febuary on leap year
+   308	  {
+   309	    *dayOfMonth = totalDays - 31;
+   310	    monthVal = 2;
+   311	  }
+   312	  else if (totalDays <= 90  + isLeapYear) //March
+   313	  {
+   314	    *dayOfMonth = totalDays - (59 + isLeapYear);
+   315	    monthVal = 3;
+   316	  }
+   317	  else if (totalDays <= 120  + isLeapYear) //April
+   318	  {
+   319	    *dayOfMonth = totalDays - (90 + isLeapYear);
+   320	    monthVal = 4;
+   321	  }
+   322	  else if (totalDays <= 151  + isLeapYear) //May
+   323	  {
+   324	    *dayOfMonth = totalDays - (120 + isLeapYear);
+   325	    monthVal = 5;
+   326	  }
+   327	  else if (totalDays <= 181  + isLeapYear) //June
+   328	  {
+   329	    *dayOfMonth = totalDays - (151 + isLeapYear);
+   330	    monthVal = 6;
+   331	  }
+   332	  else if (totalDays <= 212  + isLeapYear) //July
+   333	  {
+   334	    *dayOfMonth = totalDays - (181 + isLeapYear);
+   335	    monthVal = 7;
+   336	  }
+   337	  else if (totalDays <= 243  + isLeapYear) //August
+   338	  {
+   339	    *dayOfMonth = totalDays - (212 + isLeapYear);
+   340	    monthVal = 8;
+   341	  }
+   342	  else if (totalDays <= 273  + isLeapYear) //September
+   343	  {
+   344	    *dayOfMonth = totalDays - (243 + isLeapYear);
+   345	    monthVal = 9;
+   346	  }
+   347	  else if (totalDays <= 304  + isLeapYear) //October
+   348	  {
+   349	    *dayOfMonth = totalDays - (273 + isLeapYear);
+   350	    monthVal = 10;
+   351	  }
+   352	  else if (totalDays <= 334  + isLeapYear) //November
+   353	  {
+   354	    *dayOfMonth = totalDays - (304 + isLeapYear);
+   355	    monthVal = 11;
+   356	  }
+   357	  else if (totalDays <= 365  + isLeapYear) //December
+   358	  {
+   359	    *dayOfMonth = totalDays - (334 + isLeapYear);
+   360	    monthVal = 12;
+   361	  }
+   362	  else //The date occurs in another year
+   363	  {
+   364	    *dayOfMonth = totalDays - (365 + isLeapYear);
+   365	    monthVal = 1; //January of next year
+   366	  }
+   367	  
+   368	  return(monthVal);
+   369	}
+   370	
+   371	/***************************************************************************
+   372	*
+   373	*  Function Information
+   374	*
+   375	*  Name of Function: findStartDay
+   376	*
+   377	*  Function Return Type: int
+   378	*
+   379	*  Parameters (list data type, name, and comment one per line):
+   380	*    1. int lastDay //The day of the week that last year ended on
+   381	* 
+   382	*  Function Description: This function calculates what day of the week the start of 
+   383	*  the desired week occurs on
+   384	*
+   385	***************************************************************************/
+   386	int findStartDay(int lastDay)
+   387	{
+   388	  return((lastDay + 1) % 7); //Dates must only occur from 0 (Sunday) to 6 (Saturday)
+   389	}
+   390	
+   391	/***************************************************************************
+   392	*
+   393	*  Function Information
+   394	*
+   395	*  Name of Function: findDayInMonth
+   396	*
+   397	*  Function Return Type: int
+   398	*
+   399	*  Parameters (list data type, name, and comment one per line):
+   400	*    1. int month //The month the date occurs on
+   401	*    2. int isLeapYear //Whether or not the year is a leap year
+   402	* 
+   403	*  Function Description: This function calculates how many days are in the month
+   404	*  within which the first day of the week occurs, used if the week carrys over
+   405	*  into another month
+   406	*
+   407	***************************************************************************/
+   408	int findDayInMonth(int month, int isLeapYear)
+   409	{
+   410	  int days; //The number of days in the desired month
+   411	
+   412	  if(isLeapYear && month == 2) //Febuary During a leapYear
+   413	  {
+   414	    month = 13;
+   415	  }
+   416	
+   417	  switch(month)
+   418	  {
+   419	    case 1: //January
+   420	    case 3: //March
+   421	    case 5: //May
+   422	    case 7: //July
+   423	    case 8: //August
+   424	    case 10: //October
+   425	    case 12: //December
+   426	      days = 31;
+   427	      break;
+   428	
+   429	    case 2: //Febuary during a non leap year
+   430	      days = 28;
+   431	      break;
+   432	
+   433	    case 4: //April
+   434	    case 6: //June
+   435	    case 9: //September
+   436	    case 11: //November
+   437	      days = 30;
+   438	      break;
+   439	
+   440	    case 13: //Febuary During a leapYear
+   441	      days = 29;
+   442	      break;
+   443	  }
+   444	  return(days);
+   445	}
+   446	/***************************************************************************
+   447	*
+   448	*  Function Information
+   449	*
+   450	*  Name of Function: output
+   451	*
+   452	*  Function Return Type: void
+   453	*
+   454	*  Parameters (list data type, name, and comment one per line):
+   455	*    1. int startDay //The day of the week within the week starts
+   456	*    2. int monthVal1 //The month which the beginning of the week starts
+   457	*    3. int monthVal2 //The month which the beginning of the week ends
+   458	*    4. int dayOfMonth1 //the day the start of the week occurs in its month (like 3 for January 3rd)
+   459	*    5. int dayOfMonth2 //the day the end of the week occurs in its month (like 9 for January 9th)
+   460	*    6. int isLeapYear //whether or not the year 1 is a leap year
+   461	*    7. int year1 //The year which the start of the week is in
+   462	*    8. int year2 //The year which the end of the week is in
+   463	*
+   464	*  Function Description: This function uses conditional statements and loops to output calculated
+   465	*  values as outlined in the homework description
+   466	*
+   467	***************************************************************************/
+   468	void output(int startDay, int monthVal1, int monthVal2, int dayOfMonth1, int dayOfMonth2, int isLeapYear, int year1, int year2)
+   469	{
+   470	  int count; //Used for the pretest loop to track iterations
+   471	  int currentDay; //Used to track the current day of the week in the calendar to print
+   472	  int statementsPrinted; //Keeps track of how many dates have been printed on the calendar
+   473	  int daysInMonth; //Number of days in month 1
+   474	
+   475	  //Prints week start and end dates
+   476	  printf("\nStart of week: ");
+   477	  dateOutput(startDay, monthVal1, dayOfMonth1, year1); //Start of the week
+   478	
+   479	  printf("End of week: ");
+   480	  dateOutput(startDay + 6, monthVal2, dayOfMonth2, year2); //End of the week
+   481	  
+   482	  printf("\n\n");
+   483	
+   484	  //Outputs Calendar Heading
+   485	  switch(monthVal1)
+   486	  {
+   487	    case 1:
+   488	      printf("%16s\n","January");
+   489	      break;
+   490	    case 2:
+   491	      printf("%16s\n","Febuary");
+   492	      break;
+   493	    case 3:
+   494	      printf("%16s\n","March");
+   495	      break;
+   496	    case 4:
+   497	      printf("%16s\n","April");
+   498	      break;
+   499	    case 5:
+   500	      printf("%16s\n","May");
+   501	      break;
+   502	    case 6:
+   503	      printf("%16s\n","June");
+   504	      break;
+   505	    case 7:
+   506	      printf("%16s\n","July");
+   507	      break;
+   508	    case 8:
+   509	      printf("%16s\n","August");
+   510	      break;
+   511	    case 9:
+   512	      printf("%16s\n","September");
+   513	      break;
+   514	    case 10:
+   515	      printf("%16s\n","October");
+   516	      break;
+   517	    case 11:
+   518	      printf("%16s\n","November");
+   519	      break;
+   520	    case 12:
+   521	      printf("%16s\n","December");
+   522	      break;
+   523	  }
+   524	  
+   525	  printf("-=-=-=-=-=-=-=-=-=-=-=-=-=-\nSun Mon Tue Wed Thu Fri Sat\n");
+   526	
+   527	  currentDay = startDay; 
+   528	  daysInMonth = findDayInMonth(monthVal1, isLeapYear);
+   529	  
+   530	  count = 0;
+   531	  statementsPrinted = 0;
+   532	
+   533	  //First row of the calendar
+   534	  while(count < 7)
+   535	  {
+   536	    if(currentDay == count)
+   537	    {
+   538	      //Single digit dates are center aligned
+   539	      if(dayOfMonth1 < 10)
+   540	      {
+   541	        printf(" %d ", dayOfMonth1);
+   542	      }
+   543	      //Double digit dates are right aligned
+   544	      else
+   545	      {
+   546	        printf(" %d", dayOfMonth1);
+   547	      }
+   548	      dayOfMonth1 = incrementDate(dayOfMonth1, daysInMonth);
+   549	      
+   550	      //Keeps track that a date was printed
+   551	      statementsPrinted++;
+   552	
+   553	      //If a date is printed incriment the next day of the week to print it
+   554	      currentDay++; 
+   555	    }
+   556	    else //Digit is not to be printed (empty calendar spot)
+   557	    {
+   558	      printf("   ");
+   559	    }
+   560	    if(count != 6) //No extra space needed at the end
+   561	    {
+   562	      printf(" ");
+   563	    }
+   564	    
+   565	    count++;
+   566	  }
+   567	
+   568	  if(statementsPrinted != 7) //If second calendar row is not require
+   569	  {
+   570	    printf("\n");
+   571	  }
+   572	  //Only 7 date should be printed so this second loop prints the remaining 
+   573	  //required dates in the 2nd row of the calendar unless a 2nd row is not
+   574	  //required
+   575	
+   576	  while(statementsPrinted < 7) 
+   577	  {
+   578	    //Single digit dates are center aligned
+   579	    if(dayOfMonth1 < 10)
+   580	    {
+   581	      printf(" %d  ", dayOfMonth1);
+   582	    }
+   583	    //Double digit dates are right aligned
+   584	    else
+   585	    {
+   586	      printf(" %d ", dayOfMonth1);
+   587	    }
+   588	    
+   589	    dayOfMonth1 = incrementDate(dayOfMonth1, daysInMonth);
+   590	    statementsPrinted++;
+   591	  }
+   592	
+   593	  printf("\n");
+   594	}
+   595	
+   596	/***************************************************************************
+   597	*
+   598	*  Function Information
+   599	*
+   600	*  Name of Function: dateOutput
+   601	*
+   602	*  Function Return Type: void
+   603	*
+   604	*  Parameters (list data type, name, and comment one per line):
+   605	*    1. int day //The day of the week which the date is on
+   606	*    2. int month //The month which the date is in
+   607	*    3. int dayOfMonth ///the day which the date occurs in its month (like 3 for January 3rd)
+   608	*    4. int year //the year the date is in
+   609	*
+   610	*  Function Description: This function uses 2 switch statements to output a date to
+   611	*  assist the output function
+   612	*
+   613	***************************************************************************/
+   614	void dateOutput(int day, int month, int dayOfMonth, int year)
+   615	{
+   616	  switch(day) //Day of the week
+   617	  {
+   618	    case 0:
+   619	      printf("Sunday ");
+   620	      break;
+   621	    case 1:
+   622	      printf("Monday ");
+   623	      break;
+   624	    case 2:
+   625	      printf("Tuesday ");
+   626	      break;
+   627	    case 3:
+   628	      printf("Wednesday ");
+   629	      break;
+   630	    case 4:
+   631	      printf("Thursday ");
+   632	      break;
+   633	    case 5:
+   634	      printf("Friday ");
+   635	      break;
+   636	    case 6:
+   637	      printf("Saturday ");
+   638	      break;
+   639	  }
+   640	  
+   641	  switch(month) //Month
+   642	  {
+   643	    case 1:
+   644	      printf("January ");
+   645	      break;
+   646	    case 2:
+   647	      printf("Febuary ");
+   648	      break;
+   649	    case 3:
+   650	      printf("March ");
+   651	      break;
+   652	    case 4:
+   653	      printf("April ");
+   654	      break;
+   655	    case 5:
+   656	      printf("May ");
+   657	      break;
+   658	    case 6:
+   659	      printf("June ");
+   660	      break;
+   661	    case 7:
+   662	      printf("July ");
+   663	      break;
+   664	    case 8:
+   665	      printf("August ");
+   666	      break;
+   667	    case 9:
+   668	      printf("September ");
+   669	      break;
+   670	    case 10:
+   671	      printf("October ");
+   672	      break;
+   673	    case 11:
+   674	      printf("November ");
+   675	      break;
+   676	    case 12:
+   677	      printf("December ");
+   678	      break;
+   679	  }
+   680	  
+   681	  //Finishes off the date formatting
+   682	  printf("%d, %d\n", dayOfMonth, year);
+   683	}

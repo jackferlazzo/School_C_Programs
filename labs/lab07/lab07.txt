@@ -1,0 +1,308 @@
+The following program submission has been recorded:
+
+Student: jferlazz
+Class: CS159
+Section: 25336
+Assignment: lab07.c
+Submission: 2021-03-23 17:08
+
+If the above is incorrect, you are responsible for resubmitting the assignment or seeking assistance from a course staff member prior to the due date! Assignments will never be accepted by e-mail.
+
+If this is for a lab assignment, only one member must be designated to make a submission for the group.  Graders will not evaluate submissions from multiple group members to determine which effort you actually want graded.
+
+*** Please do not reply to this email ***
+
+The contents of the submission:
+     1	/***************************************************************************
+     2	*
+     3	* Programmers and Purdue Email Addresses:
+     4	* 1. tlirette@purdue.edu
+     5	* 2. jferlazz@purdue.edu
+     6	* 3. albarkat@purdue.edu
+     7	*
+     8	* Lab #: 7
+     9	*
+    10	* Academic Integrity Statement:
+    11	*
+    12	* We have not used source code obtained from any other unauthorized source,
+    13	* either modified or unmodified. Neither have we provided access to our code
+    14	* to another. The effort we are submitting is our own original work.
+    15	*
+    16	* Day, Time, Location of Lab: Friday, 2:30 PM, HAMP 3144
+    17	*
+    18	* Program Description: This program allows the user to input a desired base10 integer
+    19	* the program check to make sure the input in non-negative and if it is not it throws an
+    20	* error message and reprompts the user. This base10 number is then converted to a base8 number
+    21	* and tracks the changes in even and odd digits, the program then outputs these desired values
+    22	* to the user as desired by the lab
+    23	*
+    24	***************************************************************************/
+    25	
+    26	#include <stdio.h>
+    27	#include <math.h>
+    28	
+    29	int input(void);
+    30	int evenChange(int,int);
+    31	int oddChange(int,int);
+    32	int getOctal(int);
+    33	int OctalAdd(int, int);
+    34	void output(int,int,int);
+    35	
+    36	int main(void) 
+    37	{
+    38	  //LOCAL DECLARATIONS
+    39	  int base10; //The base 10 value entered by the user
+    40	  int base8; //the base 8 version of the base 10 number
+    41	  int evenChangeVal; //difference in even digits between base 10 and 8
+    42	  int oddChangeVal; //difference in odd digits between base 10 and 8
+    43	
+    44	  //EXECUTABLE STATEMENTS
+    45	  base10 = input(); //gets input
+    46	  
+    47	  //converts to base 8 from base 10
+    48	  base8 = getOctal(base10); 
+    49	 
+    50	  //find even and odd digit changes
+    51	  evenChangeVal = evenChange(base10, base8); 
+    52	  oddChangeVal = oddChange(base10, base8);
+    53	
+    54	  //output data
+    55	  output(base8, oddChangeVal, evenChangeVal);
+    56	  return 0;
+    57	}
+    58	
+    59	/***************************************************************************
+    60	*
+    61	* Function Information
+    62	*
+    63	* Name of Function:
+    64	*
+    65	* Function Return Type:
+    66	*
+    67	* Parameters (list data type, name, and comment one per line):
+    68	* 1. NA
+    69	*
+    70	* Function Description: This function takes user input on a non-negative base10
+    71	* integer value. If the value is not non-negative an error message is thrown and
+    72	* the user is reprompted
+    73	*
+    74	***************************************************************************/
+    75	
+    76	int input()
+    77	{
+    78	  int base10Input; //Base 10 number enter by the user
+    79	  do
+    80	  {
+    81	    if(base10Input < 0)
+    82	    {
+    83	      printf("\nError! The decimal value provided should be non-negative.\n\n");
+    84	    }
+    85	    printf("Enter decimal value -> ");
+    86	    scanf("%d", &base10Input);
+    87	  } while (base10Input < 0);
+    88	  return(base10Input);
+    89	}
+    90	
+    91	/***************************************************************************
+    92	*
+    93	* Function Information
+    94	*
+    95	* Name of Function: evenChange
+    96	*
+    97	* Function Return Type: int
+    98	*
+    99	* Parameters (list data type, name, and comment one per line):
+   100	* 1. int base10 //number given in base10
+   101	* 2. int base8 //number given in base8
+   102	*
+   103	* Function Description: Finds the difference in even digits 
+   104	* between a base 10 number and a base 8 number
+   105	*
+   106	***************************************************************************/
+   107	
+   108	int evenChange(int base10, int base8)
+   109	{
+   110	  int hold10; //iterator for base10 even digit finder
+   111	  int hold8; //iterator for base8 even digit finder
+   112	  int numEven10; //number of even digits in base 10 number
+   113	  int numEven8; //number of odd digits in base 8 number
+   114	  int valRemainder; //remainder used for both values
+   115	
+   116	  //set intial conditions
+   117	  hold10 = base10;
+   118	  hold8 = base8;
+   119	  numEven10 = 0;
+   120	  numEven8 = 0;
+   121	  
+   122	  while(hold10 > 0) //while there are digits left
+   123	  {
+   124	    valRemainder = hold10 % 10; //find the first digit in hold
+   125	    if(valRemainder % 2 == 0) //if even increase even by 1
+   126	    {
+   127	      numEven10 = numEven10 + 1;
+   128	    }
+   129	    hold10 = hold10 / 10; //remove right most digit
+   130	  }
+   131	
+   132	  while(hold8 > 0) //while there are digits left
+   133	  {
+   134	    valRemainder = hold8 % 8; //find the first digit in hold
+   135	    if(valRemainder % 2 == 0) //if even increase even by 1
+   136	    {
+   137	      numEven8 = numEven8 + 1;
+   138	    }
+   139	    hold8 = hold8 / 10; //remove right most digit
+   140	  }
+   141	  
+   142	  return(numEven10 - numEven8); //return difference
+   143	}
+   144	
+   145	/***************************************************************************
+   146	*
+   147	* Function Information
+   148	*
+   149	* Name of Function: oddChange
+   150	*
+   151	* Function Return Type: int
+   152	*
+   153	* Parameters (list data type, name, and comment one per line):
+   154	* 1. int base10 //number given in base10
+   155	* 2. int base8 //number given in base8
+   156	*
+   157	* Function Description: Finds the difference in odd digits 
+   158	* between a base 10 number and a base 8 number
+   159	*
+   160	***************************************************************************/
+   161	
+   162	int oddChange(int base10, int base8)
+   163	{
+   164	  int hold10; //value to hold base 10 iterator
+   165	  int hold8; //value to hold base 8 iterator
+   166	  int numOdd10; //number of odd digits in base10
+   167	  int numOdd8; //number odd digits in base8
+   168	  int valRemainder; //remainder for both valuyes
+   169	
+   170	  //set intial conditions
+   171	  hold10 = base10; 
+   172	  hold8 = base8;
+   173	  numOdd10 = 0;
+   174	  numOdd8 = 0; 
+   175	  
+   176	  while(hold10 > 0) //while there are digits left
+   177	  {
+   178	    valRemainder = hold10 % 10; //find the first digit in hold
+   179	    if(valRemainder % 2 == 1) //if odd increase even by 1
+   180	    {
+   181	      numOdd10 = numOdd10 + 1;
+   182	    }
+   183	    hold10 = hold10 / 10; //remove right most digit
+   184	  }
+   185	
+   186	  while(hold8 > 0) //while there are digits left
+   187	  {
+   188	    valRemainder = hold8 % 8; //find the first digit in hold
+   189	    if(valRemainder % 2 == 1) //if odd increase even by 1
+   190	    {
+   191	      numOdd8 = numOdd8 + 1;
+   192	    }
+   193	    hold8 = hold8 / 10; //remove right most digit
+   194	  }
+   195	  
+   196	  return(numOdd10 - numOdd8); //return difference
+   197	}
+   198	
+   199	/***************************************************************************
+   200	*
+   201	* Function Information
+   202	*
+   203	* Name of Function: getOctal
+   204	*
+   205	* Function Return Type: int
+   206	*
+   207	* Parameters (list data type, name, and comment one per line):
+   208	* 1. int base10 //the initial decimal number
+   209	*
+   210	* Function Description: Returns the octal value given a decimal number
+   211	*
+   212	***************************************************************************/
+   213	int getOctal(int base10)
+   214	{
+   215	  int digit; //the decimal place of each digit in the number
+   216	  int remainder; //the remainder of the decimal number divided by 8 (1 for ones place, 2 for tens place, etc.)
+   217	  int oct; //the current octal value
+   218	  
+   219	  //set intial conditions
+   220	  oct = 0;
+   221	  digit = 0;
+   222	  
+   223	  while(base10 != 0)
+   224	  {
+   225	    remainder = base10 % 8;
+   226	    base10 /= 8;
+   227	    digit++;
+   228	    oct += OctalAdd(remainder, digit);
+   229	  }
+   230	  return(oct);
+   231	}
+   232	
+   233	/***************************************************************************
+   234	*
+   235	* Function Information
+   236	*
+   237	* Name of Function: OctalAdd
+   238	*
+   239	* Function Return Type: int
+   240	*
+   241	* Parameters (list data type, name, and comment one per line):
+   242	* 1. int remainder //the remainder of the decimal number divided by 8
+   243	* 2. int digit //the decimal place of each digit in the number (1 for ones place, 2 for tens place, etc.)
+   244	*
+   245	* Function Description: Returns the octal digit that will be added to the current octal value of the getOctal function
+   246	*
+   247	***************************************************************************/
+   248	int OctalAdd(int remainder, int digit)
+   249	{
+   250	  int newOct; //the digit being added on to the current octal value
+   251	  newOct = remainder * pow(10, digit - 1);
+   252	  return(newOct);
+   253	}
+   254	
+   255	/***************************************************************************
+   256	*
+   257	* Function Information
+   258	*
+   259	* Name of Function: output
+   260	*
+   261	* Function Return Type: void
+   262	*
+   263	* Parameters (list data type, name, and comment one per line):
+   264	* 1. int base8 //the number given converted to base8
+   265	* 2. int oddChange //the difference between odd digits for both numbers
+   266	* 3. int evenChange // the difference between even digits for both numbers
+   267	*
+   268	* Function Description: Outputs data in a formated function for program
+   269	*
+   270	***************************************************************************/
+   271	void output(int base8, int oddChange, int evenChange)
+   272	{
+   273	  printf("\nOctal equivalent: %d\n", base8);
+   274	
+   275	  if(oddChange > 0)
+   276	  {
+   277	    printf("Odd digit change: +%d",oddChange);
+   278	  }
+   279	  else
+   280	  {
+   281	    printf("Odd digit change: %d", oddChange);
+   282	  }
+   283	  
+   284	  if(evenChange > 0)
+   285	  {
+   286	    printf("\nEven digit change: +%d\n",evenChange);
+   287	  }
+   288	  else
+   289	  {
+   290	    printf("\nEven digit change: %d\n", evenChange);
+   291	  }
+   292	  
+   293	}

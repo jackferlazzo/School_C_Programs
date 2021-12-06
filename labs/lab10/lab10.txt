@@ -1,0 +1,333 @@
+The following program submission has been recorded:
+
+Student: jferlazz
+Class: CS159
+Section: 25336
+Assignment: lab10.c
+Submission: 2021-04-19 21:28
+
+If the above is incorrect, you are responsible for resubmitting the assignment or seeking assistance from a course staff member prior to the due date! Assignments will never be accepted by e-mail.
+
+If this is for a lab assignment, only one member must be designated to make a submission for the group.  Graders will not evaluate submissions from multiple group members to determine which effort you actually want graded.
+
+*** Please do not reply to this email ***
+
+The contents of the submission:
+     1	/***************************************************************************
+     2	*
+     3	* Programmers and Purdue Email Addresses:
+     4	* 1. tlirette@purdue.edu
+     5	* 2. jferlazz@purdue.edu
+     6	* 3. albarkat@purdue.edu
+     7	*
+     8	* Lab #: 10
+     9	*
+    10	* Academic Integrity Statement:
+    11	*
+    12	* We have not used source code obtained from any other unauthorized source,
+    13	* either modified or unmodified. Neither have we provided access to our code
+    14	* to another. The effort we are submitting is our own original work.
+    15	*
+    16	* Day, Time, Location of Lab: Friday, 2:30 PM, HAMP 3144
+    17	*
+    18	* Program Description: Program that given up to twenty non-negative decimal integer values 
+    19	* as input separates the odd and even numbers and sorts them representively. Then the program conduct modulus 
+    20	* division on each element of the sorted list, the resulting values are the indices of the number
+    21	* which are added together in a summation. The sorted list and this summation are then output as outlined in
+    22	* the lab
+    23	*
+    24	***************************************************************************/
+    25	
+    26	#include <stdio.h>
+    27	#include <math.h>
+    28	#include <stdlib.h>
+    29	
+    30	#define SIZE 20
+    31	
+    32	void inputNums(int[]);
+    33	void separateArray(int, int, int[]);
+    34	int evenOddArraySize(int[], int);
+    35	void printOutput(int[], int, int);
+    36	int sumOfArray(int, int[]);
+    37	void combineArrays(int, int, int[], int[]);
+    38	void sortArray(int[], int);
+    39	
+    40	int main(void) 
+    41	{
+    42	  int values[SIZE]; //Inputted list of values
+    43	  int oddSize; //Number of odd number
+    44	  int evenSize; //Number of even numbers
+    45	
+    46	  //User inputs a list of numbers
+    47	  inputNums(values);
+    48	  
+    49	  //Finds the number of odd and even numbers in the array respectively
+    50	  oddSize = evenOddArraySize(values, 1);
+    51	  evenSize = evenOddArraySize(values, 0);
+    52	
+    53	  //separates the array into an even and odd array
+    54	  separateArray(oddSize, evenSize, values);
+    55	  
+    56	  return(0);
+    57	}
+    58	
+    59	/***************************************************************************
+    60	*
+    61	* Function Information
+    62	*
+    63	* Name of Function: inputNums
+    64	*
+    65	* Function Return Type: int
+    66	*
+    67	* Parameters (list data type, name, and comment one per line):
+    68	* 1. int decimals[] //This is the list of decimal values inputted by the user
+    69	*
+    70	* Function Description: This function takes user input on 20 non-negative decimal values,
+    71	* and stores them in an array
+    72	*
+    73	***************************************************************************/
+    74	
+    75	void inputNums(int decimals[])
+    76	{
+    77	  int count; //counter variable for the for loop to scan in values
+    78	  int store; //stores last input
+    79	
+    80	  store = 0;
+    81	  printf("Enter 20 integer values -> ");
+    82	  for (count = 0; count < 20 && store >= 0; count++)
+    83	  {
+    84	    scanf("%d", &decimals[count]);
+    85	    store = decimals[count];
+    86	  }
+    87	}
+    88	/***************************************************************************
+    89	*
+    90	* Function Information
+    91	*
+    92	* Name of Function: evenOddArraySize
+    93	*
+    94	* Function Return Type: int
+    95	*
+    96	* Parameters (list data type, name, and comment one per line):
+    97	* 1. int[] input //data
+    98	* 2. int evenOdd // desired test criteria 0 if even 1 if odd
+    99	*
+   100	* Function Description: Gets number of even or odd values in an array
+   101	*
+   102	***************************************************************************/
+   103	int evenOddArraySize(int input[], int evenOdd)
+   104	{
+   105	  int store; //number of either odd or even numbers
+   106	  int i; //incrimentor for the while loop
+   107	  
+   108	  i = 0;
+   109	  store = 0;
+   110	
+   111	  while(i < 20 && input[i] != -1) //while we havent reached the end
+   112	  {
+   113	    if(evenOdd && input[i] % 2 == 1) //if odd check
+   114	    {
+   115	      store++; //increment
+   116	    }
+   117	    else if(!evenOdd && input[i] % 2 == 0) //if even check
+   118	    {
+   119	      store++; //increment
+   120	    }
+   121	    i++; //iterate
+   122	  }
+   123	
+   124	  return store;
+   125	}
+   126	
+   127	/***************************************************************************
+   128	*
+   129	* Function Information
+   130	*
+   131	* Name of Function: sortArray
+   132	*
+   133	* Function Return Type: void
+   134	*
+   135	* Parameters (list data type, name, and comment one per line):
+   136	* 1. int[] input //values of array to be sorted 
+   137	* 2. int size //size of array to be sorted
+   138	*
+   139	* Function Description: Sorts an array in acsending order
+   140	*
+   141	***************************************************************************/
+   142	
+   143	void sortArray(int input[], int size)
+   144	{
+   145	  int innerCount; //iterator for outer loop
+   146	  int outerCount; //iterator for inner loop
+   147	  int hold; //holds value for exchanging values
+   148	
+   149	  for(outerCount = size - 1; outerCount >= 0 ; outerCount--) //for every value in array starting from top
+   150	  {
+   151	    for(innerCount = 0; innerCount < outerCount; innerCount++) //for every value up to that
+   152	    {
+   153	      if(input[innerCount + 1] < input[innerCount]) //if the value after it is smaller switch the two values
+   154	      {
+   155	        hold = input[innerCount];
+   156	        input[innerCount] = input[innerCount + 1];
+   157	        input[innerCount + 1] = hold;
+   158	      }
+   159	    }
+   160	  }
+   161	}
+   162	
+   163	/***************************************************************************
+   164	*
+   165	* Function Information
+   166	*
+   167	* Name of Function: separateArray
+   168	*
+   169	* Function Return Type: void
+   170	*
+   171	* Parameters (list data type, name, and comment one per line):
+   172	* 1. int oddSize //number of odd numbers
+   173	* 2. evenSize //Number of even numbers
+   174	* 3. int [] values // user entered numbers
+   175	*
+   176	* Function Description: This function separates the array of numbers
+   177	* into an array of even numbers and an array of even numbers
+   178	* passing this lists off to the combineArrayFunction
+   179	*
+   180	***************************************************************************/
+   181	
+   182	void separateArray(int oddSize, int evenSize, int values[])
+   183	{
+   184	  int oddValues[oddSize]; //array of odd values
+   185	  int evenValues[evenSize]; //array of even values
+   186	  int count; //incrimentor/index
+   187	  int oddIndex; //current index for the odd array
+   188	  int evenIndex; //current index for the even array
+   189	  
+   190	  oddIndex = 0;
+   191	  evenIndex = 0;
+   192	  
+   193	  for (count = 0; count < (oddSize + evenSize); count++)
+   194	  {
+   195	    if(values[count] % 2 == 0)
+   196	    {
+   197	      evenValues[evenIndex] = values[count];
+   198	      evenIndex++;
+   199	    }
+   200	    else
+   201	    {
+   202	      oddValues[oddIndex] = values[count];
+   203	      oddIndex++;
+   204	    }
+   205	  } 
+   206	
+   207	  combineArrays(oddSize, evenSize, oddValues, evenValues);
+   208	}
+   209	
+   210	/***************************************************************************
+   211	*
+   212	* Function Information
+   213	*
+   214	* Name of Function: sumOfArray
+   215	*
+   216	* Function Return Type: int
+   217	*
+   218	* Parameters (list data type, name, and comment one per line):
+   219	* 1. int size //size of array
+   220	* 2. int[] values //values contained in array
+   221	*
+   222	* Function Description: conduct modulus division on each element of the sorted list, the resulting
+   223	* values are the indices of the number which are added together in a summation
+   224	*
+   225	***************************************************************************/
+   226	
+   227	int sumOfArray(int size, int values[])
+   228	{
+   229	  int count; //array index
+   230	  int sum; //sum of array indices
+   231	
+   232	  sum = 0;
+   233	  
+   234	  for(count = 0; count < size; count++)
+   235	  {
+   236	    sum += values[values[count] % size];
+   237	  }
+   238	
+   239	  return(sum);
+   240	}
+   241	
+   242	/***************************************************************************
+   243	*
+   244	* Function Information
+   245	*
+   246	* Name of Function: combineArrays
+   247	*
+   248	* Function Return Type: void
+   249	*
+   250	* Parameters (list data type, name, and comment one per line):
+   251	* 1. int oddSize //size of odd array
+   252	* 2. int evenSize //size of even array
+   253	* 3. int oddValues[] //array of only odd integers
+   254	* 4. int evenValues[] //array of only even integers
+   255	*
+   256	* Function Description: Constructs the sorted array of odd/even integers while maintaining a clear separation between
+   257	* odd and even numbers
+   258	*
+   259	***************************************************************************/
+   260	
+   261	void combineArrays(int oddSize, int evenSize, int oddValues[], int evenValues[])
+   262	{
+   263	  int count; //sorted array index
+   264	  int sortedValues[evenSize + oddSize]; //sorted array
+   265	  int evenIndex; //even array index
+   266	  int oddIndex; //odd array index
+   267	  int arraySize; //sorted array size
+   268	  
+   269	  sortArray(oddValues, oddSize);
+   270	  sortArray(evenValues, evenSize);
+   271	
+   272	  arraySize = oddSize + evenSize;
+   273	  evenIndex = 0;
+   274	  oddIndex = 0;
+   275	
+   276	  for(count = 0; count < arraySize; count++)
+   277	  {
+   278	    if(count < evenSize)
+   279	    {
+   280	      sortedValues[count] = evenValues[evenIndex];
+   281	      evenIndex++;
+   282	    }
+   283	    else
+   284	    {
+   285	      sortedValues[count] = oddValues[oddIndex];
+   286	      oddIndex++;
+   287	    }
+   288	  }
+   289	
+   290	  printOutput(sortedValues, sumOfArray(arraySize, sortedValues), arraySize);
+   291	}
+   292	
+   293	/***************************************************************************
+   294	*
+   295	* Function Information
+   296	*
+   297	* Name of Function: printOutput
+   298	*
+   299	* Function Return Type: void
+   300	*
+   301	* Parameters (list data type, name, and comment one per line):
+   302	* 1. int sortedArray[] //the sorted array with both odd and even 
+   303	* 2. int sum //sum of indexes of modulus of array
+   304	* 3. int size //size of sorted array.
+   305	*
+   306	* Function Description: Outputs data in a formatted manner 
+   307	*
+   308	***************************************************************************/
+   309	void printOutput(int sortedArray[], int sum, int size)
+   310	{
+   311	  int i; //array index
+   312	  printf("\nSorted array: ");
+   313	  for(i = 0; i < size; i++)
+   314	  {
+   315	    printf("%d ", sortedArray[i]);
+   316	  } 
+   317	  printf("\nCalculated sum: %d\n", sum);
+   318	}

@@ -1,0 +1,80 @@
+The following program submission has been recorded:
+
+Student: jferlazz
+Class: CS159
+Section: 25336
+Assignment: lab02.c
+Submission: 2021-02-05 11:19
+
+If the above is incorrect, you are responsible for resubmitting the assignment or seeking assistance from a course staff member prior to the due date! Assignments will never be accepted by e-mail.
+
+If this is for a lab assignment, only one member must be designated to make a submission for the group.  Graders will not evaluate submissions from multiple group members to determine which effort you actually want graded.
+
+*** Please do not reply to this email ***
+
+The contents of the submission:
+     1	/***************************************************************************
+     2	*
+     3	*  Programmers and Purdue Email Addresses:
+     4	*  1. oakinley@purdue.edu
+     5	*  2. jferlazz@purdue.edu
+     6	*  3. armst100@purdue.edu
+     7	*
+     8	*  Lab #: 2
+     9	*
+    10	*  Academic Integrity Statement:
+    11	*
+    12	*  We have not used source code obtained from any other unauthorized source,
+    13	*  either modified or unmodified.  Neither have we provided access to our code
+    14	*  to another. The effort we are submitting is our own original work.
+    15	*
+    16	*  Day, Time, Location of Lab: Friday, 2:30 PM, HAMP 3144
+    17	*
+    18	*  Program Description:
+    19	*  
+    20	*  This program is given the radius of an intercircle by the user, and the program finds the
+    21	*  area of this intercirlce, the side length and area of the hexagon it is inscribed in, the 
+    22	*  area of the larger circle the hexagon is incribed in and then the side length and area of the 
+    23	*  pentagon the larger circle is inscribed in
+    24	***************************************************************************/
+    25	
+    26	#include <stdio.h>
+    27	#include <math.h>
+    28	
+    29	int main(void) 
+    30	{
+    31	  //Local Declarations
+    32	
+    33	  double sRadius; // small circle radius
+    34	  double sArea; // small circle area
+    35	  double lRadius; // large circle radius
+    36	  double lArea; // large circle area
+    37	  double hexSide; // side length of hexagon
+    38	  double hexArea; // area of hexagon
+    39	  double pentSide; // side length of pentagon
+    40	  double pentArea; // area of pentagon
+    41	
+    42	  //Executable Statements
+    43	
+    44	  printf("Enter the radius of the small circle -> ");
+    45	  scanf("%lf", &sRadius);
+    46	
+    47	  sArea = M_PI * pow(sRadius, 2); //calculates the area of the small circle
+    48	  hexSide = ((2 * sRadius) / sqrt(3)); //calculates the side length of the hexagon
+    49	  hexArea = (((3 * sqrt(3)) / 2) * pow(hexSide,2)); //calculates the area of the hexagon
+    50	  lRadius = ((2 * sRadius) / sqrt(3)); //calculates the radius of the larger circle
+    51	  lArea = M_PI * pow(lRadius, 2); //calculates the area of the large circle
+    52	  pentSide = 2 * lRadius * tan(M_PI / 5); //calculates the side length of the pentagon
+    53	  pentArea = 5 * pentSide * .5 * pentSide / (2 * tan(M_PI / 5)); //calculates the are of the pentagon
+    54	
+    55	  printf("\n-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-\n");
+    56	  printf("Area of small circle: %13.2lf\n", sArea);
+    57	  printf("Hexagon side length: %14.2lf\n", hexSide);
+    58	  printf("Area of hexagon: %18.2lf\n", hexArea);
+    59	  printf("Area of large circle: %13.2lf\n", lArea);
+    60	  printf("Pentagon side length: %13.2f\n", pentSide);
+    61	  printf("Area of pentagon: %17.2lf\n", pentArea);
+    62	  printf("-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-\n");
+    63	
+    64	  return(0);
+    65	}

@@ -1,0 +1,292 @@
+The following program submission has been recorded:
+
+Student: jferlazz
+Class: CS159
+Section: 25336
+Assignment: hw03.c
+Submission: 2021-02-26 16:31
+
+If the above is incorrect, you are responsible for resubmitting the assignment or seeking assistance from a course staff member prior to the due date! Assignments will never be accepted by e-mail.
+
+If this is for a lab assignment, only one member must be designated to make a submission for the group.  Graders will not evaluate submissions from multiple group members to determine which effort you actually want graded.
+
+*** Please do not reply to this email ***
+
+The contents of the submission:
+     1	/***************************************************************************
+     2	*
+     3	*  Programmers and Purdue Email Addresses:
+     4	*  1. jferlazz@purdue.edu
+     5	*
+     6	*  Homework #: 3
+     7	*
+     8	*  Academic Integrity Statement:
+     9	*
+    10	*  We have not used source code obtained from any other unauthorized source,
+    11	*  either modified or unmodified.  Neither have we provided access to our code
+    12	*  to another. The effort we are submitting is our own original work.
+    13	*
+    14	*  Day, Time, Location of Lab: Friday, 2:30pm, HAMP 3144
+    15	*
+    16	*  Program Description:
+    17	*
+    18	*  This program takes user input on the initial height, velocity, and angle
+    19	*  (to the horizontal) of a projectile being launched and calculates the
+    20	*  the time it takes to reach maximum height, time to hit the ground, and
+    21	*  total distance traveled then outputs desired values a outlined in the
+    22	*  homework
+    23	*
+    24	***************************************************************************/
+    25	#include <stdio.h>
+    26	#include <math.h>
+    27	
+    28	double inputHeight(void); //User inputs height
+    29	double inputVelocity(void); //User inputs Velocity
+    30	double inputAngle(void); //User inputs angle to horizontal
+    31	double calculateTimeMax(double, double); //Calculates the time it take to reach maximum height using kinematics
+    32	double calculateMaxHeight(double, double, double, double); //Calculates the maximum height using kinematics
+    33	double calculateTimeGround(double, double, double); //Calculates the time it take to reach the ground using kinematics and quadratic formula
+    34	double calculateDistance(double, double, double); //Calculates the distance traveled using kinematics
+    35	void output(double, double, double, double); //Outputs desired values
+    36	
+    37	int main(void) 
+    38	{
+    39	  //Local Declaration
+    40	
+    41	  double initialHeight; //initial height of the projectile
+    42	  double initialVelocity; //initial velocity of the projectile
+    43	  double angle; //angle to the horizontal of the projectile
+    44	  double timeMax; //time it takes to reach maximum height
+    45	  double maxHeight; //The maximum height the projectile reaches
+    46	  double timeGround; //time it takes to hit the ground
+    47	  double distance; //total distance traveled
+    48	
+    49	  //Executable statements
+    50	
+    51	  initialHeight = inputHeight();
+    52	  initialVelocity = inputVelocity();
+    53	  angle = inputAngle();
+    54	  
+    55	  timeMax = calculateTimeMax(initialVelocity, angle);
+    56	  maxHeight = calculateMaxHeight(initialVelocity, angle, timeMax, initialHeight);
+    57	  timeGround = calculateTimeGround(initialHeight, initialVelocity, angle);
+    58	  distance = calculateDistance(initialVelocity, angle, timeGround);
+    59	  
+    60	  output(timeMax, maxHeight, timeGround, distance);
+    61	  
+    62	  return 0;
+    63	}
+    64	
+    65	/***************************************************************************
+    66	*
+    67	*  Function Information
+    68	*
+    69	*  Name of Function: inputHeight
+    70	*
+    71	*  Function Return Type: double
+    72	*
+    73	*  Parameters (list data type, name, and comment one per line):
+    74	*    1. NA
+    75	*
+    76	*  Function Description: This function takes input on initial height
+    77	*
+    78	***************************************************************************/
+    79	
+    80	double inputHeight()
+    81	{
+    82	  double height; //user input for height
+    83	  printf("Enter height of launch [m] -> ");
+    84	  scanf("%lf", &height);
+    85	  return(height);
+    86	}
+    87	
+    88	/***************************************************************************
+    89	*
+    90	*  Function Information
+    91	*
+    92	*  Name of Function: inputVelocity
+    93	*
+    94	*  Function Return Type: double
+    95	*
+    96	*  Parameters (list data type, name, and comment one per line):
+    97	*    1. NA
+    98	*
+    99	*  Function Description: This function takes input on initial velocity
+   100	*
+   101	***************************************************************************/
+   102	
+   103	double inputVelocity()
+   104	{
+   105	  double velocity; //user input for velocity
+   106	  printf("Enter initial Velocity [m/s] -> ");
+   107	  scanf("%lf", &velocity);
+   108	  return(velocity);
+   109	}
+   110	
+   111	/***************************************************************************
+   112	*
+   113	*  Function Information
+   114	*
+   115	*  Name of Function: inputAngle
+   116	*
+   117	*  Function Return Type: double
+   118	*
+   119	*  Parameters (list data type, name, and comment one per line):
+   120	*    1. NA
+   121	*
+   122	*  Function Description: This function takes input on the projectile's
+   123	*  lanuch angle from the horizontal
+   124	*
+   125	***************************************************************************/
+   126	
+   127	double inputAngle()
+   128	{
+   129	  double angle; //user input for the angle to the horizontal
+   130	  printf("Enter angle to the horizontal [degrees] -> ");
+   131	  scanf("%lf", &angle);
+   132	  return(angle);
+   133	}
+   134	
+   135	/***************************************************************************
+   136	*
+   137	*  Function Information
+   138	*
+   139	*  Name of Function: calculateTimeMax
+   140	*
+   141	*  Function Return Type: double
+   142	*
+   143	*  Parameters (list data type, name, and comment one per line):
+   144	*    1. double initialVelocity The user inputed initial velocity
+   145	*    2. double angle the user inputed angle of the projectile to horizontal
+   146	*
+   147	*  Function Description: This function uses the kinematic formula
+   148	*  tmax = V0 * sin(angle) / g to find the time it takes to reach maximum 
+   149	*  height
+   150	*
+   151	***************************************************************************/
+   152	
+   153	double calculateTimeMax(double initialVelocity, double angle)
+   154	{
+   155	  //tmax = V0 * sin(angle) / g
+   156	  return((initialVelocity * sin((angle * M_PI) / 180) / 9.8)); 
+   157	}
+   158	
+   159	/***************************************************************************
+   160	*
+   161	*  Function Information
+   162	*
+   163	*  Name of Function: calculateMaxHeight
+   164	*
+   165	*  Function Return Type: double
+   166	*
+   167	*  Parameters (list data type, name, and comment one per line):
+   168	*    1. double initialVelocity The user inputed initial velocity
+   169	*    2. double angle the user inputed angle of the projectile to horizontal
+   170	*    3. double timeMax the calculated time it takes to reach maximum height
+   171	*
+   172	*  Function Description: This function uses the kinematic formula
+   173	*  h = V0 * sin(angle) * tMax - .5 * g * (tmax)^2 + h0 to find the maximum 
+   174	*  height of the projectile
+   175	*
+   176	***************************************************************************/
+   177	
+   178	double calculateMaxHeight(double initialVelocity, double angle, double timeMax, double initialHeight)
+   179	{
+   180	  double val1; //placeholder value 1 to sentment calculation
+   181	  double val2; //placeholder value 2 to sentment calculation
+   182	
+   183	  //val1 = V0 * sin(angle) * tMax
+   184	  val1 = initialVelocity * sin((angle * M_PI) / 180) * timeMax;
+   185	  
+   186	  //val2 = - .5 * g * (tmax)^2
+   187	  val2 = -.5 * 9.8 * (timeMax * timeMax);
+   188	
+   189	  //h = V0 * sin(angle) * tMax - .5 * g * (tmax)^2 + h0
+   190	  return(val1 + val2 + initialHeight);
+   191	}
+   192	
+   193	/***************************************************************************
+   194	*
+   195	*  Function Information
+   196	*
+   197	*  Name of Function: calculateTimeGround
+   198	*
+   199	*  Function Return Type: double
+   200	*
+   201	*  Parameters (list data type, name, and comment one per line):
+   202	*    1. double initialHeight the user inputed initial height
+   203	*    2. double initialVelocity The user inputed initial velocity
+   204	*    3. double angle the user inputed angle of the projectile to horizontal
+   205	*
+   206	*  Function Description: This function uses the kinematic formula
+   207	*  0 = h + V0 * sin(angle) * tGround - .5 * g * (tGround)^2 and the 
+   208	*  quadratic formulat x = (-b +/- sqrt(b^2 - 4ac)) / 2a (the subtraction 
+   209	*  not addition is used in this case) to factor and solve for tGround
+   210	*
+   211	***************************************************************************/
+   212	
+   213	double calculateTimeGround(double initialHeight, double initialVelocity, double angle)
+   214	{
+   215	  double radical; //The placeholder value for the radical part of the quadratic formula
+   216	
+   217	  //sqrt(b^2 - 4ac)
+   218	  radical = sqrt(pow((initialVelocity * sin(angle * M_PI / 180)),2) + 2 * 9.8 * initialHeight);
+   219	
+   220	  //x = (-b - sqrt(b^2 - 4ac)) / 2a
+   221	  return((initialVelocity * sin(angle * M_PI / 180) + radical) / 9.8);
+   222	}
+   223	
+   224	/***************************************************************************
+   225	*
+   226	*  Function Information
+   227	*
+   228	*  Name of Function: calculateDistance
+   229	*
+   230	*  Function Return Type: double
+   231	*
+   232	*  Parameters (list data type, name, and comment one per line):
+   233	*    2. double initialVelocity The user inputed initial velocity
+   234	*    3. double angle the user inputed angle of the projectile to horizontal
+   235	*    3. double timeGround the calculated value that is the time the 
+   236	*    projectile takes to hit the ground
+   237	*
+   238	*  Function Description: This function uses the kinematic formula
+   239	*  distance = V0 * cos(angle) * tGround to solve for the distance the
+   240	*  projectile went in the horizontal direction
+   241	*
+   242	***************************************************************************/
+   243	
+   244	double calculateDistance(double initialVelocity, double angle, double timeGround)
+   245	{
+   246	  //distance = V0 * cos(angle) * tGround
+   247	  return(initialVelocity * cos(angle * M_PI / 180) * timeGround);
+   248	}
+   249	
+   250	/***************************************************************************
+   251	*
+   252	*  Function Information
+   253	*
+   254	*  Name of Function: output
+   255	*
+   256	*  Function Return Type: void
+   257	*
+   258	*  Parameters (list data type, name, and comment one per line):
+   259	*    1. double timeMax the calculated time it takes to reach maximum height
+   260	*    2. double maxHeight the calculated maximum height the projectile reaches
+   261	*    3. double timeGround the calculated value that is the time the 
+   262	*    projectile takes to hit the ground
+   263	*
+   264	*  Function Description: This function outputs the desired calculated values
+   265	*  as outlined in the assignment
+   266	*
+   267	***************************************************************************/
+   268	
+   269	void output(double timeMax, double maxHeight, double timeGround, double distance)
+   270	{
+   271	  printf("\n-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-\n");
+   272	  printf("Time to max height:%20.2lf s\n", timeMax);
+   273	  printf("Maximum height reached:%16.2lf m\n", maxHeight);
+   274	  printf("Time to hit ground:%20.2lf s\n", timeGround);
+   275	  printf("Total distance traveled:%15.2lf m\n", distance);
+   276	  printf("-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-\n");
+   277	}

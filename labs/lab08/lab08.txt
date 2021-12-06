@@ -1,0 +1,417 @@
+The following program submission has been recorded:
+
+Student: jferlazz
+Class: CS159
+Section: 25336
+Assignment: lab08.c
+Submission: 2021-03-31 16:07
+
+If the above is incorrect, you are responsible for resubmitting the assignment or seeking assistance from a course staff member prior to the due date! Assignments will never be accepted by e-mail.
+
+If this is for a lab assignment, only one member must be designated to make a submission for the group.  Graders will not evaluate submissions from multiple group members to determine which effort you actually want graded.
+
+*** Please do not reply to this email ***
+
+The contents of the submission:
+     1	/***************************************************************************
+     2	*
+     3	* Programmers and Purdue Email Addresses:
+     4	* 1. tlirette@purdue.edu
+     5	* 2. jferlazz@purdue.edu
+     6	* 3. albarkat@purdue.edu
+     7	*
+     8	* Lab #: 8
+     9	*
+    10	* Academic Integrity Statement:
+    11	*
+    12	* We have not used source code obtained from any other unauthorized source,
+    13	* either modified or unmodified. Neither have we provided access to our code
+    14	* to another. The effort we are submitting is our own original work.
+    15	*
+    16	* Day, Time, Location of Lab: Friday, 2:30 PM, HAMP 3144
+    17	*
+    18	* Program Description: Given a user entered range of decimal values, find the
+    19	* smallest number number that has the largest change in odd and even digits when 
+    20	* comparing the decimal value to its octal
+    21	*
+    22	***************************************************************************/
+    23	
+    24	#include <stdio.h>
+    25	#include <math.h>
+    26	#include <stdlib.h>
+    27	
+    28	int input1(void);
+    29	int input2(int);
+    30	int getOctal(int);
+    31	int evenChange(int,int);
+    32	int oddChange(int,int);
+    33	int OctalAdd(int, int);
+    34	int getLargestOddDecimal(int,int);
+    35	int getLargestEvenDecimal(int,int);
+    36	void printResults(int,int,int,int,int,int);
+    37	
+    38	int main(void)
+    39	{
+    40	  //LOCAL DECLARATIONS
+    41	  int startVal; //the first decimal value of the range
+    42	  int endVal; //the last decimal value of the range
+    43	  int largeOddDecimal; //decimal with the largest odd digit change from decimal to octal
+    44	  int largeEvenDecimal; //decimal with the largest even digit change form decimal to octal 
+    45	  int largeOddOctal; //the octal value of largeOddDecimal
+    46	  int largeEvenOctal; //the octal value of largeEvenDecimal
+    47	  int largeOddChange; //the difference of the number of odd digits between a decimal and octal number
+    48	  int largeEvenChange; //the difference of number of even digits between a decimal and octal number
+    49	
+    50	  //EXECUTABLE STATEMENTS
+    51	
+    52	  //Gets user inputs for range of values
+    53	  startVal = input1(); 
+    54	  endVal = input2(startVal);
+    55	
+    56	  //Find the smallest decimal value with the largest digit change (even and odd) 
+    57	  largeOddDecimal = getLargestOddDecimal(startVal,endVal);
+    58	  largeEvenDecimal = getLargestEvenDecimal(startVal,endVal);
+    59	
+    60	  //Finds the Octal equivalent of the found decimal values
+    61	  largeOddOctal = getOctal(largeOddDecimal);
+    62	  largeEvenOctal = getOctal(largeEvenDecimal);
+    63	
+    64	  //Finds the change in number odd and even digit from the found Octal and Decimal Number
+    65	  largeOddChange = oddChange(largeOddDecimal,largeOddOctal);
+    66	  largeEvenChange = evenChange(largeEvenDecimal,largeEvenOctal);
+    67	  
+    68	  //Outputs data
+    69	  printResults(largeOddChange, largeOddDecimal, largeOddOctal, largeEvenChange , largeEvenDecimal, largeEvenOctal);
+    70	
+    71	  return(0);
+    72	}
+    73	
+    74	/***************************************************************************
+    75	*
+    76	* Function Information
+    77	*
+    78	* Name of Function: input1
+    79	*
+    80	* Function Return Type: int
+    81	*
+    82	* Parameters (list data type, name, and comment one per line):
+    83	* 1. NA
+    84	*
+    85	* Function Description: This function takes user input on a non-negative base10
+    86	* integer value. If the value is not non-negative an error message is thrown and
+    87	* the user is reprompted
+    88	*
+    89	***************************************************************************/
+    90	
+    91	int input1()
+    92	{
+    93	  int base10Input; //Base 10 number enter by the user
+    94	  do
+    95	  {
+    96	    if(base10Input < 0)
+    97	    {
+    98	      printf("\nError! The decimal value provided should be non-negative.\n\n");
+    99	    }
+   100	    printf("Enter starting decimal value -> ");
+   101	    scanf("%d", &base10Input);
+   102	  } while (base10Input < 0);
+   103	  return(base10Input);
+   104	}
+   105	
+   106	/***************************************************************************
+   107	*
+   108	* Function Information
+   109	*
+   110	* Name of Function: input2
+   111	*
+   112	* Function Return Type: int
+   113	*
+   114	* Parameters (list data type, name, and comment one per line):
+   115	* 1. int startVal //value to start search
+   116	*
+   117	* Function Description: This function takes user input on a non-negative base10
+   118	* integer value. If the value is not greater than the first user entered value an error 
+   119	* message is thrown and the user is reprompted
+   120	*
+   121	***************************************************************************/
+   122	
+   123	int input2(int startVal)
+   124	{
+   125	  int base10Input; //Base 10 number enter by the user
+   126	  base10Input = startVal + 1; //Set an inital value to avoid the error message initally
+   127	  do
+   128	  {
+   129	    if(base10Input <= startVal)
+   130	    {
+   131	      printf("\nError! The ending value provided should be greater than %d.\n\n",startVal);
+   132	    }
+   133	    printf("Enter ending decimal value -> ");
+   134	    scanf("%d", &base10Input);
+   135	  } while (base10Input <= startVal);
+   136	  return(base10Input);
+   137	}
+   138	
+   139	/***************************************************************************
+   140	*
+   141	* Function Information
+   142	*
+   143	* Name of Function: evenChange
+   144	*
+   145	* Function Return Type: int
+   146	*
+   147	* Parameters (list data type, name, and comment one per line):
+   148	* 1. int base10 //number given in base10
+   149	* 2. int base8 //number given in base8
+   150	*
+   151	* Function Description: Finds the difference in even digits 
+   152	* between a base 10 number and a base 8 number
+   153	*
+   154	***************************************************************************/
+   155	
+   156	int evenChange(int base10, int base8)
+   157	{
+   158	  int hold10; //iterator for base10 even digit finder
+   159	  int hold8; //iterator for base8 even digit finder
+   160	  int numEven10; //number of even digits in base 10 number
+   161	  int numEven8; //number of odd digits in base 8 number
+   162	  int valRemainder; //remainder used for both values
+   163	
+   164	  //set intial conditions
+   165	  hold10 = base10;
+   166	  hold8 = base8;
+   167	  numEven10 = 0;
+   168	  numEven8 = 0;
+   169	  
+   170	  while(hold10 > 0) //while there are digits left
+   171	  {
+   172	    valRemainder = hold10 % 10; //find the first digit in hold
+   173	    if(valRemainder % 2 == 0) //if even increase even by 1
+   174	    {
+   175	      numEven10 = numEven10 + 1;
+   176	    }
+   177	    hold10 = hold10 / 10; //remove right most digit
+   178	  }
+   179	
+   180	  while(hold8 > 0) //while there are digits left
+   181	  {
+   182	    valRemainder = hold8 % 8; //find the first digit in hold
+   183	    if(valRemainder % 2 == 0) //if even increase even by 1
+   184	    {
+   185	      numEven8 = numEven8 + 1;
+   186	    }
+   187	    hold8 = hold8 / 10; //remove right most digit
+   188	  }
+   189	  
+   190	  return(numEven10 - numEven8); //return difference
+   191	}
+   192	
+   193	/***************************************************************************
+   194	*
+   195	* Function Information
+   196	*
+   197	* Name of Function: oddChange
+   198	*
+   199	* Function Return Type: int
+   200	*
+   201	* Parameters (list data type, name, and comment one per line):
+   202	* 1. int base10 //number given in base10
+   203	* 2. int base8 //number given in base8
+   204	*
+   205	* Function Description: Finds the difference in odd digits 
+   206	* between a base 10 number and a base 8 number
+   207	*
+   208	***************************************************************************/
+   209	
+   210	int oddChange(int base10, int base8)
+   211	{
+   212	  int hold10; //value to hold base 10 iterator
+   213	  int hold8; //value to hold base 8 iterator
+   214	  int numOdd10; //number of odd digits in base10
+   215	  int numOdd8; //number odd digits in base8
+   216	  int valRemainder; //remainder for both valuyes
+   217	
+   218	  //set intial conditions
+   219	  hold10 = base10; 
+   220	  hold8 = base8;
+   221	  numOdd10 = 0;
+   222	  numOdd8 = 0; 
+   223	  
+   224	  while(hold10 > 0) //while there are digits left
+   225	  {
+   226	    valRemainder = hold10 % 10; //find the first digit in hold
+   227	    if(valRemainder % 2 == 1) //if odd increase even by 1
+   228	    {
+   229	      numOdd10 = numOdd10 + 1;
+   230	    }
+   231	    hold10 = hold10 / 10; //remove right most digit
+   232	  }
+   233	
+   234	  while(hold8 > 0) //while there are digits left
+   235	  {
+   236	    valRemainder = hold8 % 8; //find the first digit in hold
+   237	    if(valRemainder % 2 == 1) //if odd increase even by 1
+   238	    {
+   239	      numOdd8 = numOdd8 + 1;
+   240	    }
+   241	    hold8 = hold8 / 10; //remove right most digit
+   242	  }
+   243	  
+   244	  return(numOdd10 - numOdd8); //return difference
+   245	}
+   246	
+   247	/***************************************************************************
+   248	*
+   249	* Function Information
+   250	*
+   251	* Name of Function: getOctal
+   252	*
+   253	* Function Return Type: int
+   254	*
+   255	* Parameters (list data type, name, and comment one per line):
+   256	* 1. int base10 //the initial decimal number
+   257	*
+   258	* Function Description: Returns the octal value given a decimal number
+   259	*
+   260	***************************************************************************/
+   261	int getOctal(int base10)
+   262	{
+   263	  int digit; //the decimal place of each digit in the number
+   264	  int remainder; //the remainder of the decimal number divided by 8 (1 for ones place, 2 for tens place, etc.)
+   265	  int oct; //the current octal value
+   266	  
+   267	  //set intial conditions
+   268	  oct = 0; //octal number
+   269	  digit = 0; //digit of the octal number
+   270	  
+   271	  while(base10 != 0)
+   272	  {
+   273	    remainder = base10 % 8;
+   274	    base10 /= 8;
+   275	    digit++;
+   276	    oct += OctalAdd(remainder, digit);
+   277	  }
+   278	  return(oct);
+   279	}
+   280	
+   281	/***************************************************************************
+   282	*
+   283	* Function Information
+   284	*
+   285	* Name of Function: OctalAdd
+   286	*
+   287	* Function Return Type: int
+   288	*
+   289	* Parameters (list data type, name, and comment one per line):
+   290	* 1. int remainder //the remainder of the decimal number divided by 8
+   291	* 2. int digit //the decimal place of each digit in the number (1 for ones place, 2 for tens place, etc.)
+   292	*
+   293	* Function Description: Returns the octal digit that will be added to the current octal 
+   294	* value of the getOctal function
+   295	*
+   296	***************************************************************************/
+   297	
+   298	int OctalAdd(int remainder, int digit)
+   299	{
+   300	  int newOct; //the digit being added on to the current octal value
+   301	  newOct = remainder * pow(10, digit - 1);
+   302	  return(newOct);
+   303	}
+   304	
+   305	/***************************************************************************
+   306	*
+   307	* Function Information
+   308	*
+   309	* Name of Function: getLargestOddDecimal
+   310	*
+   311	* Function Return Type: int
+   312	*
+   313	* Parameters (list data type, name, and comment one per line):
+   314	* 1. int num1 // The smallest number to check the odd decimal change of
+   315	* 2. int num2 // The largest number to check the odd decimal change of
+   316	*
+   317	* Function Description: Returns the decimal value of the number with the greater odd 
+   318	* digit change between decimal and octal
+   319	*
+   320	***************************************************************************/
+   321	
+   322	int getLargestOddDecimal(int num1,int num2)
+   323	{
+   324	  int storeChange = 0; //stores the largest change in decimal odds
+   325	  int storeNum = num1; //stores the number with largest change in decimal odds
+   326	  int i; //iterator for for loop
+   327	
+   328	  for(i = num1;i <= num2;i++) //for numbers between num1 and num2 inclusive
+   329	  {
+   330	    if(abs(oddChange(i,getOctal(i))) > storeChange) //if this numbers change is greater
+   331	    {
+   332	      storeChange = abs(oddChange(i,getOctal(i))); //change values to number
+   333	      storeNum = i;
+   334	    }
+   335	  }
+   336	  
+   337	  return(storeNum); //return value
+   338	}
+   339	
+   340	/***************************************************************************
+   341	*
+   342	* Function Information
+   343	*
+   344	* Name of Function: getLargestEvenDecimal
+   345	*
+   346	* Function Return Type: int
+   347	*
+   348	* Parameters (list data type, name, and comment one per line):
+   349	* 1. int num1 // The smallest number to check the even decimal change of
+   350	* 2. int num2 // The largest number to check the even decimal change of
+   351	*
+   352	* Function Description: Returns the decimal value of the number with the greater even
+   353	* digit change between decimal and octal
+   354	*
+   355	***************************************************************************/
+   356	
+   357	int getLargestEvenDecimal(int num1,int num2)
+   358	{
+   359	  int storeChange = 0; //stores the largest change in decimal evens
+   360	  int storeNum = num1; //stores the number with largest change in decimal evens
+   361	  int i; //iterator for for loop
+   362	
+   363	  for(i = num1;i <= num2;i++) //for numbers between num1 and num2 inclusive
+   364	  {
+   365	    if(abs(evenChange(i,getOctal(i))) > storeChange) //if this numbers change is greater
+   366	    {
+   367	      storeChange = abs(evenChange(i,getOctal(i))); //change values to number
+   368	      storeNum = i; 
+   369	    }
+   370	  }
+   371	  
+   372	  return(storeNum); //return value
+   373	}
+   374	
+   375	/***************************************************************************
+   376	*
+   377	* Function Information
+   378	*
+   379	* Name of Function: printResults
+   380	*
+   381	* Function Return Type: int
+   382	*
+   383	* Parameters (list data type, name, and comment one per line):
+   384	* 1. int oddChange //value of largest change in odd decimals
+   385	* 2. int decimal1 //decimal value of number with greatest odd change
+   386	* 3. int octal1 //octal value of number with greatest odd change
+   387	* 4. int evenChange //value of largest change in even decimals
+   388	* 5. int decimal2 //decimal value of number with greatest even change
+   389	* 6. int octal2 //octal value of number with greatest even change
+   390	*
+   391	* Function Description: Prints the decimal numbers with the largest odd and even digit 
+   392	* changes, their corresponding octal equivalent numbers, and the change in odd/even 
+   393	* digits between the decimal and octal numbers.
+   394	*
+   395	***************************************************************************/
+   396	
+   397	void printResults(int oddChange, int decimal1, int octal1, int evenChange, int decimal2, int octal2)
+   398	{
+   399	  printf("\n-=-=-=-=-=-=-=-=-=-=-=-=-=-Change-Decimal-=-Octal-");
+   400	  printf("\nLargest odd digit change: %7d %7d %7d", oddChange, decimal1, octal1);
+   401	  printf("\nLargest even digit change: %6d %7d %7d\n", evenChange, decimal2, octal2);
+   402	}

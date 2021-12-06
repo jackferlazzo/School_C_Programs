@@ -1,0 +1,84 @@
+The following program submission has been recorded:
+
+Student: jferlazz
+Class: CS159
+Section: 25336
+Assignment: lab03.c
+Submission: 2021-02-12 02:30
+
+If the above is incorrect, you are responsible for resubmitting the assignment or seeking assistance from a course staff member prior to the due date! Assignments will never be accepted by e-mail.
+
+If this is for a lab assignment, only one member must be designated to make a submission for the group.  Graders will not evaluate submissions from multiple group members to determine which effort you actually want graded.
+
+*** Please do not reply to this email ***
+
+The contents of the submission:
+     1	/*****************************************************************************
+     2	*
+     3	*  Programmers and Purdue Email Addresses:
+     4	*  1. jferlazz@purdue.edu
+     5	*  2. armst100@purdue.edu
+     6	*  3. oakinley@purdue.edu
+     7	*   
+     8	*  Lab #: 3
+     9	*
+    10	*  Academic Integrity Statement:  
+    11	*   
+    12	*  We have not used source code obtained from any other unauthorized source,
+    13	*  either modified or unmodified.  Neither have we provided access to our code
+    14	*  to another. The effort we are submitting is our own original work.
+    15	*  Day, Time, Location of Lab: Friday, 2:30pm, HAMP 3144
+    16	*
+    17	*  Program Description:  
+    18	*  
+    19	*  This program allows the user to selec whether a regular polygon is inscribed
+    20	*  inside of a circle or the circle is inscribed inside of a regular polygon and 
+    21	*  calculates the circle radius, circle area, polygon area, and the side length
+    22	*  given user inputted number of polygon sides and apothem length
+    23	*********************************************************************************/
+    24	#include <stdio.h>
+    25	#include <math.h>
+    26	
+    27	int main(void) 
+    28	{
+    29	  //Local Declarations
+    30	
+    31	  double circleArea; //Calculated area of the circle
+    32	  double radius_1; //radius of circle for selection 1
+    33	  double radius_2; //radius of circle for selection 2
+    34	  double radius; //Calculated radius of the circle
+    35	  double polySide; //number of sides of polygon
+    36	  double sideLength; //side length of polygon
+    37	  int selection; //user shape selection; 1 is polygon inside circle 2, vice versa
+    38	  double apothem; //user input apothem of polygon
+    39	  double polyArea; //area of polygon
+    40	
+    41	  //Executable Statements
+    42	
+    43	  printf("1. Polygon inside of circle\n");
+    44	  printf("2. Circle inside of polygon\n");
+    45	  printf("Select your option -> ");
+    46	  scanf("%d", &selection);
+    47	  printf("Enter number of polygon sides -> ");
+    48	  scanf("%lf", &polySide);
+    49	  printf("Enter length of polygon apothem -> ");
+    50	  scanf("%lf", &apothem);
+    51	
+    52	  //Calculated side length and area of polygon (Not determined by selection)
+    53	  sideLength = 2 * apothem * tan(M_PI / polySide);
+    54	  polyArea = (sideLength * polySide * apothem) / 2;
+    55	
+    56	  //Calculates radius for either situation and displays based on selection using modulus and division evaluation
+    57	  radius_1 = apothem / cos(M_PI / polySide);
+    58	  radius_2 = apothem;
+    59	  radius = (selection % 2) * (radius_1) + (selection / 2) * (radius_2);
+    60	  circleArea = M_PI * pow(radius, 2);
+    61	
+    62	  printf("\n-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-\n");
+    63	  printf("Circle Radius:%17.2lf\n",radius);
+    64	  printf("Circle Area:%19.2lf\n", circleArea);
+    65	  printf("Polygon Side Length:%11.2lf\n", sideLength);
+    66	  printf("Polygon Area:%18.2lf\n", polyArea);
+    67	  printf("-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-\n");
+    68	  return (0);
+    69	}

@@ -1,0 +1,345 @@
+The following program submission has been recorded:
+
+Student: jferlazz
+Class: CS159
+Section: 25336
+Assignment: lab05.c
+Submission: 2021-03-04 21:07
+
+If the above is incorrect, you are responsible for resubmitting the assignment or seeking assistance from a course staff member prior to the due date! Assignments will never be accepted by e-mail.
+
+If this is for a lab assignment, only one member must be designated to make a submission for the group.  Graders will not evaluate submissions from multiple group members to determine which effort you actually want graded.
+
+*** Please do not reply to this email ***
+
+The contents of the submission:
+     1	/***************************************************************************
+     2	*
+     3	*  Programmers and Purdue Email Addresses:
+     4	*  1. jferlazz@purdue.edu
+     5	*  2. armst100@purdue.edu
+     6	*  3. oakinley@purdue.edu
+     7	*
+     8	*  Lab #: 5
+     9	*
+    10	*  Academic Integrity Statement:
+    11	*
+    12	*  We have not used source code obtained from any other unauthorized source,
+    13	*  either modified or unmodified.  Neither have we provided access to our code
+    14	*  to another. The effort we are submitting is our own original work.
+    15	*
+    16	*  Day, Time, Location of Lab: Friday, 2:30 PM, HAMP 3144
+    17	*
+    18	*  Program Description:
+    19	*  This program calculates the area of four quadrilaterals formed by a triangle 
+    20	*  made by three points defined by the user, and the inradii of that triangle. The 
+    21	*  program then outputs these calculations as outlined in the lab.
+    22	*
+    23	***************************************************************************/
+    24	#include <stdio.h>
+    25	#include <math.h>
+    26	
+    27	//Global Decloration
+    28	double input(int, int); //input function
+    29	double distance(double, double, double, double); //Calculates the distance between points
+    30	double perimeter(double, double, double); //Calculates the perimeter
+    31	double inCenterCord(double, double, double, double, double, double, double);
+    32	double inRadiusLength(double, double, double, double);
+    33	double getAngle(double, double);
+    34	double getArea(double, double, double);
+    35	//Output
+    36	void output(double, double, double, double, double, double); //Output of all vairables 
+    37	void degreesMinSec(double, double, double);
+    38	
+    39	int main(void) 
+    40	{
+    41	  //Local Declarations
+    42	  double xCord1; //x-cooridate of point 1
+    43	  double yCord1; //y-cooridate of point 1
+    44	  double xCord2; //x-cooridate of point 2
+    45	  double yCord2; //y-cooridate of point 2
+    46	  double xCord3; //x-cooridate of point 3
+    47	  double yCord3; //y-cooridate of point 3
+    48	  double side1; //Triangle side oppisite point 1
+    49	  double side2; //Triangle side oppisite point 2
+    50	  double side3; //Triangle side oppisite point 3
+    51	  double Perimeter; //the perimeter of the triangle
+    52	  double inCenterX; //x coordinate of the incenter circle
+    53	  double inCenterY; //y coordinate of the incenter circle
+    54	  double inRadius; //radius of the circle inside the user entered triange
+    55	  double distanceAI; //distance from angle A to the incenter
+    56	  double distanceBI; //distance from angle B to the incenter
+    57	  double distanceCI; //distance from angle C to the incenter
+    58	  double angleA; //angle of point A of the large triangle 
+    59	  double angleB; //angle of point B of the large triangle 
+    60	  double angleC; //angle of point C of the large triangle 
+    61	  double areaA; //area of small triangle stemming from point A
+    62	  double areaB; //area of small triangle stemming from point B
+    63	  double areaC; //area of small triangle stemming from point C
+    64	
+    65	  //Executable Statements
+    66	  xCord1 = input('x', 1); //Input of the coordinate x1 point 
+    67	  yCord1 = input('y', 1); //Input of the cooridate y1 point
+    68	  xCord2 = input('x', 2); //Input of the coordinate x2 point
+    69	  yCord2 = input('y', 2); //Input of the coordinate y2 point 
+    70	  xCord3 = input('x', 3); //Input of the coordinate x3 point
+    71	  yCord3 = input('y', 3); //Input of the coordinate y3 point
+    72	
+    73	  side1 = distance(xCord2, yCord2, xCord3, yCord3); // side1 distance 
+    74	  side2 = distance(xCord1, yCord1, xCord3, yCord3); //side2 distance
+    75	  side3 = distance(xCord1, yCord1, xCord2, yCord2); //side3 distance
+    76	
+    77	  Perimeter = perimeter(side1, side2, side3);
+    78	  
+    79	  //x and y coordinates of the incenter circle calculate by inCenterCord function
+    80	  inCenterX = inCenterCord(side1, side2, side3, xCord1, xCord2, xCord3, Perimeter);
+    81	  inCenterY = inCenterCord(side1, side2, side3, yCord1, yCord2, yCord3, Perimeter);
+    82	
+    83	  //radius of the circle inside the triangle
+    84	  inRadius = inRadiusLength(side1, side2, side3, Perimeter);
+    85	
+    86	  //Finds the distance between angles and incenter
+    87	  distanceAI = distance(xCord1, yCord1, inCenterX, inCenterY);
+    88	  distanceBI = distance(xCord2, yCord2, inCenterX, inCenterY);
+    89	  distanceCI = distance(xCord3, yCord3, inCenterX, inCenterY);
+    90	
+    91	  //Finds the degrees of each angle
+    92	  angleA = getAngle(distanceAI, inRadius);
+    93	  angleB = getAngle(distanceBI, inRadius);
+    94	  angleC = getAngle(distanceCI, inRadius);
+    95	  
+    96	  //Finds the area of each section
+    97	  areaA = getArea(distanceAI, inRadius, angleA);
+    98	  areaB = getArea(distanceBI, inRadius, angleB);
+    99	  areaC = getArea(distanceCI, inRadius, angleC);
+   100	  
+   101	  //Output
+   102	  output(angleA, angleB, angleC, areaA, areaB, areaC);
+   103	
+   104	  return 0;
+   105	}
+   106	
+   107	/***************************************************************************
+   108	*
+   109	*  Function Information
+   110	*
+   111	*  Name of Function: input
+   112	*
+   113	*  Function Return Type: double
+   114	*
+   115	*  Parameters (list data type, name, and comment one per line):
+   116	*    1. int desiredChar // This is the desired type of coorinate either x or y
+   117	*    2. int pointNum // This is the desired point number either point 1, 2, 3
+   118	*
+   119	*  Function Description: This function takes user input for a desired x or y coorinate
+   120	*  for either point 1, 2, or 3
+   121	*
+   122	***************************************************************************/
+   123	double input(int desiredChar, int pointNum)
+   124	{
+   125	  double coordinate; //user input for coordinate either x or y
+   126	  
+   127	  //prints a statement that is custom tailored to the desired coorinate
+   128	  printf("Enter %c coordinate #%d -> ", desiredChar, pointNum);
+   129	  scanf("%lf", &coordinate);
+   130	  return(coordinate);
+   131	}
+   132	
+   133	/***************************************************************************
+   134	*
+   135	*  Function Information
+   136	*
+   137	*  Name of Function: distance
+   138	*
+   139	*  Function Return Type: double
+   140	*
+   141	*  Parameters (list data type, name, and comment one per line):
+   142	*    1. double xCord1 // This x-coordinate of the 1st point
+   143	*    2. double yCord1 // This y-coordinate of the 1st point
+   144	*    3. double xCord2 // This x-coordinate of the 2nd point
+   145	*    4. double xCord2 // This x-coordinate of the 2nd point
+   146	*
+   147	*  Function Description: This function takes 2 points x and y cooridates and finds
+   148	*  the distance between the representing a side of the triangle using the distance
+   149	*  formula distance = sqrt((X2 - X1)^2 + (Y2 - Y1)^2)
+   150	*
+   151	***************************************************************************/
+   152	double distance(double xCord1, double yCord1, double xCord2, double yCord2)
+   153	{
+   154	  //distance = sqrt((X2 - X1)^2 + (Y2 - Y1)^2)
+   155	  return(sqrt(pow(xCord2 - xCord1, 2) + pow(yCord2 - yCord1, 2))); 
+   156	}
+   157	
+   158	/***************************************************************************
+   159	*
+   160	*  Function Information
+   161	*
+   162	*  Name of Function: perimeter
+   163	*
+   164	*  Function Return Type: double
+   165	*
+   166	*  Parameters (list data type, name, and comment one per line):
+   167	*    1. double side1 // side length between points opposite point 1
+   168	*    2. double side2 // side length between points opposite point 2
+   169	*    3. double side3 // side length between points opposite point 3
+   170	*
+   171	*  Function Description: This function calculates the perimeter of a triangle
+   172	*  by adding its three side lengths.
+   173	*
+   174	***************************************************************************/
+   175	double perimeter(double side1, double side2, double side3)
+   176	{
+   177	  return(side1 + side2 + side3); //find the perimeter of the large trianlge 
+   178	}
+   179	
+   180	/***************************************************************************
+   181	*
+   182	*  Function Information
+   183	*
+   184	*  Name of Function: inCenterCord
+   185	*
+   186	*  Function Return Type: double
+   187	*
+   188	*  Parameters (list data type, name, and comment one per line):
+   189	*    1. double side1 // side length between points opposite point 1 (a)
+   190	*    2. double side2 // side length between points opposite point 2 (b)
+   191	*    3. double side3 // side length between points opposite point 3 (c)
+   192	*    4. double cord1 // This x or y-coordinate of the 1st point (Ax or Ay)
+   193	*    5. double cord2 // This x or y-coordinate of the 2nd point (Bx or By)
+   194	*    6. double cord3 // This x or y-coordinate of the 3rd point (Cx or Cy)
+   195	*    7. double Perimeter //This is the perimeter of the triangle (p)
+   196	*
+   197	*  Function Description: This function calculates either the x or y cooridate of the
+   198	*  incenter circle O using the formula Ox = (a Ax + b Bx + c Cx) / p or
+   199	*  Oy = (a Ay + b By + c Cy) / p
+   200	*
+   201	***************************************************************************/
+   202	double inCenterCord(double side1, double side2, double side3, double cord1, double cord2, double cord3, double Perimeter)
+   203	{
+   204	  //Ox = (a Ax + b Bx + c Cx) / p or Oy = (a Ay + b By + c Cy) / p
+   205	  return(((side1 * cord1) + (side2 * cord2) + (side3 * cord3)) / Perimeter);
+   206	}
+   207	
+   208	/***************************************************************************
+   209	*
+   210	*  Function Information
+   211	*
+   212	*  Name of Function: inRediusLength
+   213	*
+   214	*  Function Return Type: double
+   215	*
+   216	*  Parameters (list data type, name, and comment one per line):
+   217	*    1. double side1 // side length between points opposite point 1 (a)
+   218	*    2. double side2 // side length between points opposite point 2 (b)
+   219	*    3. double side3 // side length between points opposite point 3 (c)
+   220	*    4. double Perimeter //This is the perimeter of the triangle (2s)
+   221	*
+   222	*  Function Description: This function calculates the radius of the incenter circle
+   223	*  inside the triangle using r = K / s where s is the semi-perimeter, 1/2(a + b + c),
+   224	*  and K is Heron's Formula which is K = sqrt(s(s - a)(s - b)(s - c))
+   225	*
+   226	***************************************************************************/
+   227	double inRadiusLength(double side1, double side2, double side3, double Perimeter)
+   228	{
+   229	  double semiPerimeter; //The semi-perimeter used in Heron's Formula which is 1/2 the perimeter
+   230	  double HeronsVal; //This is the value K found in Heron's Formula
+   231	  
+   232	  semiPerimeter = Perimeter / 2; // 1/2(a + b + c)
+   233	
+   234	  //K = sqrt(s(s - a)(s - b)(s - c))
+   235	  HeronsVal = sqrt(semiPerimeter * (semiPerimeter - side1) * (semiPerimeter - side2) * (semiPerimeter - side3));
+   236	
+   237	  return(HeronsVal / semiPerimeter); //r = K / s
+   238	
+   239	}
+   240	
+   241	/***************************************************************************
+   242	*
+   243	*  Function Information
+   244	*
+   245	*  Name of Function: getAngle
+   246	*
+   247	*  Function Return Type: double
+   248	*
+   249	*  Parameters (list data type, name, and comment one per line):
+   250	*    1. double length //length between the desired angle and the inCenter point
+   251	*    2. double inRadius //Length of the inRadius
+   252	*
+   253	*  Function Description: This function uses trigonmetry to calculate an internal
+   254	*  angle of a triangle using the inRadius and the length between the inCenter and
+   255	*  the desired angle
+   256	*
+   257	***************************************************************************/
+   258	double getAngle(double length, double inRadius)
+   259	{
+   260	  return(2 * (asin(inRadius / length)) * (180 / M_PI)); // finds the angle of the each of the major points (A,B,C) on the triangle 
+   261	}
+   262	
+   263	/***************************************************************************
+   264	*
+   265	*  Function Information
+   266	*
+   267	*  Name of Function: getArea
+   268	*
+   269	*  Function Return Type: double
+   270	*
+   271	*  Parameters (list data type, name, and comment one per line):
+   272	*    1. double length //length between the desired angle and the inCenter point
+   273	*    2. double inRadius //Length of the inRadius
+   274	*    3. double angle //The angle corresponding to the desired section (A, B, or C)
+   275	*
+   276	*  Function Description: This function calculates the area of 2 identical right triangles
+   277	*  in each area section in order to find the total area of the section
+   278	*
+   279	***************************************************************************/
+   280	double getArea(double length, double inRadius, double angle)
+   281	{
+   282	  return(inRadius * length * sin(M_PI * (90 - (angle / 2)) / 180)); //finds the area of each of the smaller triangles in the large triangle by using the angle 
+   283	}
+   284	
+   285	/***************************************************************************
+   286	*
+   287	*  Function Information
+   288	*
+   289	*  Name of Function: output
+   290	*
+   291	*  Function Return Type: double
+   292	*
+   293	*  Parameters (list data type, name, and comment one per line):
+   294	*    1. double angleA
+   295	*    2. double angleB
+   296	*    3. double angleC
+   297	*    4. double areaA
+   298	*    5. double areaB
+   299	*    6. double areaC
+   300	*  Function Description: This function outputs the vairables that we found and declared earlier in the code 
+   301	***************************************************************************/
+   302	
+   303	void output(double angleA, double angleB, double angleC, double areaA, double areaB, double areaC)
+   304	{
+   305	  double minsA; // minuets vairable A
+   306	  double secsA; // seconds vairable A
+   307	  double minsB; // minuets vairable B
+   308	  double secsB; // seconds vairable B
+   309	  double minsC; // minuets vairable C 
+   310	  double secsC; // seconds vairable C
+   311	
+   312	  //Use to remove extra decimals due to floating point error round
+   313	  angleA = (int)(angleA * 1000000 + .5);
+   314	  angleA = (double) angleA / 1000000;
+   315	  angleB = (int)(angleB * 1000000 + .5);
+   316	  angleB = (double) angleB / 1000000;
+   317	  angleC = (int)(angleC * 1000000 + .5);
+   318	  angleC = (double) angleC / 1000000;
+   319	
+   320	  // conversion of the a output to minuets 
+   321	  minsA = ((angleA - (int)angleA) * 60); // conversion of the a output to minutes
+   322	  secsA = ((minsA - (int)(minsA)) * 60); // conversion of the a output to seconds 
+   323	  minsB = ((angleB - (int)angleB) * 60); // conversion of the b output to minuets 
+   324	  secsB = ((minsB - (int)(minsB)) * 60); // conversion of the b output to seconds 
+   325	  minsC = ((angleC - (int)angleC) * 60); // conversion of the c output to minuets 
+   326	  secsC = ((minsC - (int)(minsC)) * 60); // conversion of the c output to seconds
+   327	  
+   328	  printf("Internal triangle angles: %d %d\' %.2lf\", %d %d\' %.2lf\", %d %d\' %.2lf\"", (int)angleA, (int)minsA, secsA, (int)angleB, (int)minsB, secsB, (int)angleC, (int)minsC, secsC);
+   329	  printf("\nArea of quadrilaterals: %.2lf, %.2lf, %.2lf\n",areaA, areaB, areaC);
+   330	} 

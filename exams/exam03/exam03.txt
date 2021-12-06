@@ -1,0 +1,464 @@
+The following program submission has been recorded:
+
+Student: jferlazz
+Class: CS159
+Section: 25336
+Assignment: exam03.c
+Submission: 2021-04-16 02:09
+
+If the above is incorrect, you are responsible for resubmitting the assignment or seeking assistance from a course staff member prior to the due date! Assignments will never be accepted by e-mail.
+
+If this is for a lab assignment, only one member must be designated to make a submission for the group.  Graders will not evaluate submissions from multiple group members to determine which effort you actually want graded.
+
+*** Please do not reply to this email ***
+
+The contents of the submission:
+     1	/***************************************************************************
+     2	*
+     3	*  Programmers and Purdue Email Addresses:
+     4	*  1. jferlazz@purdue.edu
+     5	*
+     6	*  Lab #: Exam 3
+     7	*
+     8	*  Academic Integrity Statement:
+     9	*
+    10	*  We have not used source code obtained from any other unauthorized source,
+    11	*  either modified or unmodified.  Neither have we provided access to our code
+    12	*  to another. The effort we are submitting is our own original work.
+    13	*
+    14	*  Day, Time, Location of Lab: Friday, 2:30 PM, HAMP 3144
+    15	*
+    16	*  Program Description:
+    17	*  This program allows the user to input a list of up to 20 non-negative integers
+    18	*  (user ends -1 to end the list early). The user than inputs what type of number system
+    19	*  they would like to convert the decimal odd numbers and the even numbers to (2 being binary, 8 being octal etc)
+    20	*  the program than outputs the new lists of numbers as outlined in the lab
+    21	*  
+    22	***************************************************************************/
+    23	
+    24	#include <stdio.h>
+    25	#include <math.h>
+    26	#include <stdlib.h>
+    27	
+    28	#define SIZE 20 //maximum size of the input array
+    29	
+    30	int inputOddBase();
+    31	int inputEvenBase();
+    32	void inputNums(int[]);
+    33	int getNewNum(int,int); 
+    34	int ConvertAdd(int,int);
+    35	int countOdds(int[]);
+    36	int countEvens(int[]);
+    37	void convertArray(int[], int, int, int, int);
+    38	void printArrays(int[], int[], int, int, int, int);
+    39	void printBaseType(int);
+    40	
+    41	int main(void) 
+    42	{
+    43	  //Local Declarations
+    44	  int decimal[SIZE]; //stores input decimal values
+    45	  int oddBase; //The number system used for odd numbers
+    46	  int evenBase; //The number system used for even numbers
+    47	  int evenNums; //number of even numbers
+    48	  int oddNums; //number of odd numbers
+    49	
+    50	  //Executable Statements
+    51	
+    52	  //User inputs
+    53	  oddBase = inputOddBase();
+    54	  evenBase = inputEvenBase();
+    55	  inputNums(decimal);
+    56	
+    57	  //Counter Function (count number of odd or even numbers)
+    58	  evenNums = countEvens(decimal);
+    59	  oddNums = countOdds(decimal);
+    60	
+    61	  //Converts and Outputs Data
+    62	  convertArray(decimal, oddNums, evenNums, oddBase, evenBase);
+    63	
+    64	  return 0;
+    65	}
+    66	
+    67	/***************************************************************************
+    68	*
+    69	* Function Information
+    70	*
+    71	* Name of Function: inputOddBase
+    72	*
+    73	* Function Return Type: int
+    74	*
+    75	* Parameters (list data type, name, and comment one per line):
+    76	* 1. NA
+    77	*
+    78	* Function Description: This function takes user input what number system odd numbers
+    79	* should be converted to (2 for binary, 8 for octal etc)
+    80	*
+    81	***************************************************************************/
+    82	
+    83	int inputOddBase()
+    84	{
+    85	  int oddBase; //counter variable for the for loop to scan in values
+    86	
+    87	  do
+    88	  {
+    89	    printf("Enter base for odd numbers -> ");
+    90	    scanf("%d", &oddBase);
+    91	    if(oddBase < 2 || oddBase > 9)
+    92	    {
+    93	      printf("\nError! Base must be in the range from 2 to 9.\n\n");
+    94	    }
+    95	  } while (oddBase < 2 || oddBase > 9);
+    96	  return(oddBase);
+    97	}
+    98	
+    99	/***************************************************************************
+   100	*
+   101	* Function Information
+   102	*
+   103	* Name of Function: inputEvenBase
+   104	*
+   105	* Function Return Type: int
+   106	*
+   107	* Parameters (list data type, name, and comment one per line):
+   108	* 1. NA
+   109	*
+   110	* Function Description: This function takes user input what number system even numbers
+   111	* should be converted to (2 for binary, 8 for octal etc)
+   112	*
+   113	***************************************************************************/
+   114	
+   115	int inputEvenBase()
+   116	{
+   117	  int evenBase; //counter variable for the for loop to scan in values
+   118	  evenBase = 0; //Intial value set to st
+   119	  do
+   120	  {
+   121	    printf("Enter base for even numbers -> ");
+   122	    scanf("%d", &evenBase);
+   123	    if(evenBase < 2 || evenBase > 9) //must be betwen 2 and 9
+   124	    {
+   125	      printf("\nError! Base must be in the range from 2 to 9.\n\n");
+   126	    }
+   127	  } while(evenBase < 2 || evenBase > 9);
+   128	  return(evenBase);
+   129	}
+   130	
+   131	/***************************************************************************
+   132	*
+   133	* Function Information
+   134	*
+   135	* Name of Function: inputNums
+   136	*
+   137	* Function Return Type: Void
+   138	*
+   139	* Parameters (list data type, name, and comment one per line):
+   140	* 1. int decimals[] //This is the list of decimal values inputted by the user
+   141	*
+   142	* Function Description: This function takes user input on up to 20 non-negative decimal values,
+   143	* and stores them in an array. If the user would like to end number inputs early they merely
+   144	* need to type -1
+   145	*
+   146	***************************************************************************/
+   147	
+   148	void inputNums(int decimals[])
+   149	{
+   150	  int count; //counter variable for the for loop to scan in values
+   151	  int input; //value entered by the user
+   152	
+   153	  count = 0;
+   154	
+   155	  printf("Enter up to 20 integer values -> ");
+   156	  do
+   157	  {
+   158	    scanf("%d", &input);
+   159	    decimals[count] = input;
+   160	    count++;
+   161	  } while(input != -1 && count < 20);
+   162	}
+   163	
+   164	/***************************************************************************
+   165	*
+   166	* Function Information
+   167	*
+   168	* Name of Function: getNewNum
+   169	*
+   170	* Function Return Type: int
+   171	*
+   172	* Parameters (list data type, name, and comment one per line):
+   173	* 1. int base10 //the initial decimal number
+   174	* 2. int targetBase //The number system you wish to form the new number from
+   175	* ie Binary (2) , octal (8), etc
+   176	*
+   177	* Function Description: Returns the new number system value given a decimal number
+   178	* and the desired number system
+   179	*
+   180	***************************************************************************/
+   181	
+   182	int getNewNum(int base10, int targetBase)
+   183	{
+   184	  int digit; //the decimal place of each digit in the number
+   185	  int remainder; //the remainder of the decimal number divided by 8 (1 for ones place, 2 for tens place, etc.)
+   186	  int newNum; //the new number post conversion
+   187	  
+   188	  //set intial conditions
+   189	  newNum = 0; //new number
+   190	  digit = 0; //digit of the the new number
+   191	  
+   192	  while(base10 != 0)
+   193	  {
+   194	    remainder = base10 % targetBase;
+   195	    base10 /= targetBase;
+   196	    digit++;
+   197	    newNum += ConvertAdd(remainder, digit);
+   198	  }
+   199	  return(newNum);
+   200	}
+   201	
+   202	/***************************************************************************
+   203	*
+   204	* Function Information
+   205	*
+   206	* Name of Function: ConvertAdd
+   207	*
+   208	* Function Return Type: int
+   209	*
+   210	* Parameters (list data type, name, and comment one per line):
+   211	* 1. int remainder //the remainder of the decimal number divided by base
+   212	* 2. int digit //the decimal place of each digit in the number (1 for ones place, 2 for tens place, etc.)
+   213	*
+   214	* Function Description: Returns the digit that will be added to the current value when converting to another number storage method
+   215	*
+   216	***************************************************************************/
+   217	
+   218	int ConvertAdd(int remainder, int digit)
+   219	{
+   220	  int newDigit; //the digit being added on to the current octal value
+   221	  newDigit = remainder * pow(10, digit - 1);
+   222	  return(newDigit);
+   223	}
+   224	
+   225	/***************************************************************************
+   226	*
+   227	* Function Information
+   228	*
+   229	* Name of Function: countEvens
+   230	*
+   231	* Function Return Type: int
+   232	*
+   233	* Parameters (list data type, name, and comment one per line):
+   234	* 1. int[] decimal //decimal values in an array
+   235	*
+   236	* Function Description: Returns the number of even numbers in the decimal array
+   237	*
+   238	***************************************************************************/
+   239	
+   240	int countEvens(int decimal[])
+   241	{
+   242	  int count; //Incrimentor for the for loop
+   243	  int numEvens; //number of even numbers
+   244	  
+   245	  count = 0;
+   246	
+   247	  numEvens = 0; //initial value
+   248	  while(decimal[count] != -1 && count < 20) //if number is even add 1 to numEven
+   249	  {
+   250	    if(decimal[count] % 2 == 0)
+   251	    {
+   252	      numEvens++;
+   253	    }
+   254	    count++;
+   255	  }
+   256	  return(numEvens); //return
+   257	}
+   258	
+   259	/***************************************************************************
+   260	*
+   261	* Function Information
+   262	*
+   263	* Name of Function: countOdds
+   264	*
+   265	* Function Return Type: int
+   266	*
+   267	* Parameters (list data type, name, and comment one per line):
+   268	* 1. int[] decimal //decimal values in an array
+   269	*
+   270	* Function Description: Returns the number of odd numbers in the decimal array
+   271	*
+   272	***************************************************************************/
+   273	
+   274	int countOdds(int decimal[])
+   275	{
+   276	  int count; //Incrimentor for the for loop
+   277	  int numOdds; //number of odd numbers
+   278	
+   279	  count = 0;
+   280	
+   281	  numOdds = 0; //initial value
+   282	  while(decimal[count] != -1 && count < 20) //if number is even add 1 to numOdds
+   283	  {
+   284	    if(decimal[count] % 2 == 1)
+   285	    {
+   286	      numOdds++;
+   287	    }
+   288	    count++;
+   289	  }
+   290	  return(numOdds); //return values
+   291	}
+   292	
+   293	/***************************************************************************
+   294	*
+   295	* Function Information
+   296	*
+   297	* Name of Function: convertArray
+   298	*
+   299	* Function Return Type: void
+   300	*
+   301	* Parameters (list data type, name, and comment one per line):
+   302	* 1. int[] decimal //decimal values
+   303	* 2. int numOdd //number of odd number in decimal
+   304	* 3. int numEven //number of even numbers in decimal
+   305	* 4. int oddBase //the number system the odd numbers must be converted to 2 for binary 8 for octal etc
+   306	* 5. int evenBase //the number system the even numbers must be converted to 2 for binary 8 for octal etc
+   307	*
+   308	* Function Description: Converts the decimal array's odd numbers and even numbers to an
+   309	* array numbers in the desired number system
+   310	*
+   311	***************************************************************************/
+   312	
+   313	void convertArray(int decimal[], int numOdd, int numEven, int oddBase, int evenBase)
+   314	{
+   315	  int oddArray[numOdd]; //array of odd number converted to the desired number system
+   316	  int evenArray[numEven]; //array of even number converted to the desired number system
+   317	  int oddIndex; //iterator for odd index
+   318	  int evenIndex; //iterator for even index
+   319	  int count; //array index
+   320	
+   321	  oddIndex = 0; //initial values
+   322	  evenIndex = 0;
+   323	  count = 0;
+   324	
+   325	  while(decimal[count] != -1 && count < 20) // all values in decimal except the -1
+   326	  {
+   327	    if (decimal[count] % 2 == 1) //if number is odd set binary to value
+   328	    {
+   329	      //stores the binary number in the correct index then iterates the binary index counter
+   330	      oddArray[oddIndex] = getNewNum(decimal[count], oddBase);
+   331	      oddIndex++;
+   332	    }
+   333	    else if (decimal[count] % 2 == 0) //else set octal to value
+   334	    {
+   335	      //stores the octal number in the correct index then iterates the octal index counter
+   336	      evenArray[evenIndex] = getNewNum(decimal[count], evenBase);
+   337	      evenIndex++;
+   338	    }
+   339	    count++; //Incriments the index
+   340	  }
+   341	  printArrays(oddArray, evenArray, numEven, numOdd, evenBase, oddBase); //print arrays
+   342	}
+   343	
+   344	/***************************************************************************
+   345	*
+   346	* Function Information
+   347	*
+   348	* Name of Function: printArrays
+   349	*
+   350	* Function Return Type: void
+   351	*
+   352	* Parameters (list data type, name, and comment one per line):
+   353	* 1. int[] binary //binaryIndex values
+   354	* 2. int[] octal //octal values
+   355	* 3. int numEven //number of even numbers in the decimal array
+   356	* 4. int numOdd //number of odd numbers in the decimal array
+   357	* 5. int evenBase //the number system the even numbers must be converted to 2 for binary 8 for octal etc
+   358	* 4. int oddBase //the number system the odd numbers must be converted to 2 for binary 8 for octal etc
+   359	*
+   360	* Function Description: Prints new number system arrays in a formatted mannor
+   361	*
+   362	***************************************************************************/
+   363	
+   364	void printArrays(int oddArray[], int evenArray[], int numEven, int numOdd, int evenBase, int oddBase)
+   365	{
+   366	  int count; //array index
+   367	  
+   368	  printf("\n");
+   369	  printBaseType(oddBase);
+   370	  printf("values: ");
+   371	  
+   372	  if(numOdd != 0) //if there are values
+   373	  {
+   374	    for (count = 0; count < numOdd; count++) //print each
+   375	    {
+   376	      printf("%d ", oddArray[count]);
+   377	    }
+   378	  }
+   379	  else //else print none
+   380	  {
+   381	    printf("None");
+   382	  }
+   383	  
+   384	  printf("\n");
+   385	  printBaseType(evenBase);
+   386	  printf("values: ");
+   387	  
+   388	  if(numEven != 0) //if there are values
+   389	  {
+   390	    for (count = 0; count < numEven; count++) //print each
+   391	    {
+   392	      printf("%d ", evenArray[count]);
+   393	    }
+   394	  }
+   395	  else // else print none
+   396	  {
+   397	    printf("None");
+   398	  }
+   399	  
+   400	  printf("\n");
+   401	  
+   402	}
+   403	
+   404	/***************************************************************************
+   405	*
+   406	* Function Information
+   407	*
+   408	* Name of Function: printBaseType
+   409	*
+   410	* Function Return Type: void
+   411	*
+   412	* Parameters (list data type, name, and comment one per line):
+   413	* 1. int base //The number base whose indentifer you wish to print
+   414	*
+   415	* Function Description: This function prints out the proper base indentifer given a
+   416	* sent in number system 2 for Binary, 8  for Octal etc.
+   417	*
+   418	***************************************************************************/
+   419	
+   420	void printBaseType (int base)
+   421	{
+   422	  switch (base)
+   423	  {
+   424	    case 2:
+   425	      printf("Binary ");
+   426	      break;
+   427	    case 3:
+   428	      printf("Ternary ");
+   429	      break;
+   430	    case 4:
+   431	      printf("Quaternary ");
+   432	      break;
+   433	    case 5:
+   434	      printf("Quinary ");
+   435	      break;
+   436	    case 6:
+   437	      printf("Senary ");
+   438	      break;
+   439	    case 7:
+   440	      printf("Septenary ");
+   441	      break;
+   442	    case 8:
+   443	      printf("Octal ");
+   444	      break;
+   445	    case 9:
+   446	      printf("Nonary ");
+   447	      break;
+   448	  }
+   449	}

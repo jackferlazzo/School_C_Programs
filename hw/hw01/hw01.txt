@@ -1,0 +1,67 @@
+The following program submission has been recorded:
+
+Student: jferlazz
+Class: CS159
+Section: 25336
+Assignment: hw01.c
+Submission: 2021-01-27 19:53
+
+If the above is incorrect, you are responsible for resubmitting the assignment or seeking assistance from a course staff member prior to the due date! Assignments will never be accepted by e-mail.
+
+If this is for a lab assignment, only one member must be designated to make a submission for the group.  Graders will not evaluate submissions from multiple group members to determine which effort you actually want graded.
+
+*** Please do not reply to this email ***
+
+The contents of the submission:
+     1	
+     2	/***************************************************************************
+     3	*
+     4	*  Programmer and Purdue Email Address:
+     5	*  1. jferlazz@purdue.edu
+     6	*
+     7	*  Homework #: 1
+     8	*
+     9	*  Academic Integrity Statement:
+    10	*
+    11	*  I have not used source code obtained from any other unauthorized source, 
+    12	*  either modified or unmodified.  Neither have I provided access to my code 
+    13	*  to another. The effort I am submitting is my own original work.
+    14	*
+    15	*  Day, Time, Location of Lab: Friday, 2:30pm, HAMP 3144
+    16	*
+    17	*  Program Description:
+    18	*  
+    19	*  The user enters the the mass of a gilder and airplane in kg and the
+    20	*  forward thrust produced by the propellers in N. This program then 
+    21	*  calculates the resulting tension on the cable conneting the two aircraft
+    22	*  and the acceleration of the glider
+    23	*
+    24	***************************************************************************/
+    25	#include <stdio.h>
+    26	
+    27	int main(void) 
+    28	{
+    29	  //Local Declaration
+    30	  double airMass; //mass of the airplace in Kg
+    31	  double gliderMass; //mass of the glider in Kg
+    32	  double propForce; //Force produced by the propeller in N
+    33	  double cableTens; //The resulting tension force on the cable in N
+    34	  double accGlider; //The resulting acceleration of the glider in m/s^2
+    35	  
+    36	  //Executable Statements
+    37	  printf("Enter mass of airplane (kg) -> ");
+    38	  scanf("%lf", &airMass);
+    39	  printf("Enter mass of glider (kg) -> ");
+    40	  scanf("%lf", &gliderMass);
+    41	  printf("Enter the force produced by propellers (N) -> ");
+    42	  scanf("%lf", &propForce);
+    43	  //Using Newtons second law Force = Mass * Acceleration the gliders
+    44	  //acceleration and the cables tension can be found
+    45	  accGlider = propForce / (airMass + gliderMass); //a = F / total mass
+    46	  cableTens = gliderMass * accGlider; //F = mass of the glider * acceleration
+    47	  printf("\nResulting tension: %.2lf Newtons\n", cableTens);
+    48	  printf("Acceleration of glider: %.2lf m/s^2\n", accGlider);
+    49	  
+    50	  return 0;
+    51	}
+    52	

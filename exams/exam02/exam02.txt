@@ -1,0 +1,488 @@
+The following program submission has been recorded:
+
+Student: jferlazz
+Class: CS159
+Section: 25336
+Assignment: exam02.c
+Submission: 2021-03-17 21:24
+
+If the above is incorrect, you are responsible for resubmitting the assignment or seeking assistance from a course staff member prior to the due date! Assignments will never be accepted by e-mail.
+
+If this is for a lab assignment, only one member must be designated to make a submission for the group.  Graders will not evaluate submissions from multiple group members to determine which effort you actually want graded.
+
+*** Please do not reply to this email ***
+
+The contents of the submission:
+     1	/***************************************************************************
+     2	*
+     3	*  Programmers and Purdue Email Addresses:
+     4	*  1. jferlazz@purdue.edu
+     5	*
+     6	*  Lab #: Exam 2
+     7	*
+     8	*  Academic Integrity Statement:
+     9	*
+    10	*  We have not used source code obtained from any other unauthorized source,
+    11	*  either modified or unmodified.  Neither have we provided access to our code
+    12	*  to another. The effort we are submitting is our own original work.
+    13	*
+    14	*  Day, Time, Location of Lab: Friday, 2:30 PM, HAMP 3144
+    15	*
+    16	*  Program Description:
+    17	*  The user enters 3 desired point for a triangle, and the program calculates the coordinates of
+    18	*  the triangles's orthocenter, the internal angles of the internal triangle with the largest outside
+    19	*  side length, and the triangle type (equilateral, isosceles, or scalene) and angle type (acute, right or obtuse)
+    20	*  of said inter triangle
+    21	*  
+    22	***************************************************************************/
+    23	
+    24	#include <stdio.h>
+    25	#include <math.h>
+    26	
+    27	double inputXCord(int); //xCord input function
+    28	double inputYCord(void); //yCord input function
+    29	double orthoCenter(double, double, double, double, double, double); //Calculates x or y-coordinate of orthocenter
+    30	double distance(double, double, double, double); //Calculates the distance between points
+    31	double findAngle(double, double, double); //Finds an angle of the triangle using vector math
+    32	void insideCords(double, double, double, double, double, double, double, double, double, double*, double*, double*, double*); //finds the cords of the largest internal triangle
+    33	int sideType(double, double, double); //checks for side type of the triangle 1 for equilateral, 2 for isosceles, 3 for scalene
+    34	int angleType(double); //checks for the angle type of the triangle, 1 for acute, 2 for right, and 3 for obtuse using the largest angle
+    35	void output(double, double, double, double, double); //Outputs desired values as outlined in the lab
+    36	
+    37	int main(void) 
+    38	{
+    39	  //Local Declaration
+    40	  double xCord1; //x coordinate of the first point
+    41	  double yCord1; //y coordinate of the first point
+    42	  double xCord2; //x coordinate of the second point
+    43	  double yCord2; //y coordinate of the second point
+    44	  double xCord3; //x coordinate of the third point
+    45	  double yCord3; //y coordinate of the third point
+    46	  double orthx; //X-coordinate of the orthocenter
+    47	  double orthy; //Y-coordinate of the orthocenter
+    48	  double side1; //Triangle side oppisite point 1
+    49	  double side2; //Triangle side oppisite point 2
+    50	  double side3; //Triangle side oppisite point 3
+    51	  double angleA; //finds the angle at point 1 (outside triange)
+    52	  double angleB; //finds the angle at point 2 (outside triange)
+    53	  double angleC; //finds the angle at point 3 (outside triange)
+    54	  double inAngleA; //finds the angle at point 1 (inside triangle)
+    55	  double inAngleB; //finds the angle at point 2 (inside triangle)
+    56	  double inAngleC; //finds the angle at point 3 (inside triangle)
+    57	  double insideSide1; //The first side of the inside triange
+    58	  double insideSide2; //The second side of the inside triange
+    59	  double insideSide3; //The third side of the inside triange
+    60	  double insideX2; //The x component of the 2nd point of the inside triange
+    61	  double insideX3; //The x component of the 3rd point of the inside triange
+    62	  double insideY2; //The y component of the 2nd point of the inside triange
+    63	  double insideY3; //The y component of the 3rd point of the inside triange
+    64	
+    65	  //Executable Statements
+    66	
+    67	  //User Inputs
+    68	  xCord1 = inputXCord(1);
+    69	  yCord1 = inputYCord();
+    70	  xCord2 = inputXCord(2);
+    71	  yCord2 = inputYCord();
+    72	  xCord3 = inputXCord(3);
+    73	  yCord3 = inputYCord();
+    74	
+    75	  //Calculates the length of the triangle's outside sides
+    76	  side1 = distance(xCord2, yCord2, xCord3, yCord3); 
+    77	  side2 = distance(xCord1, yCord1, xCord3, yCord3);
+    78	  side3 = distance(xCord1, yCord1, xCord2, yCord2);
+    79	
+    80	  //Calculates the angles of the outside triangle
+    81	  angleA = findAngle(side2, side3, side1);
+    82	  angleB = findAngle(side3, side1, side2);
+    83	  angleC = findAngle(side1, side2, side3);
+    84	
+    85	  //Calcalutes the orthocenter of the triangle
+    86	  orthx = orthoCenter(xCord1, xCord2, xCord3, angleA, angleB, angleC);
+    87	  orthy = orthoCenter(yCord1, yCord2, yCord3, angleA, angleB, angleC);
+    88	
+    89	  //Finds the coordinates of the largest inside triangle
+    90	  insideCords(side1, side2, side3, xCord1, xCord2, xCord3, yCord1, yCord2, yCord3, &insideX2, &insideX3, &insideY2, &insideY3);
+    91	  
+    92	  //Calculates the length of each side of the inside triangle using the inside coordinates and the orthocenter
+    93	  insideSide1 = distance(insideX2, insideY2, insideX3, insideY3);
+    94	  insideSide2 = distance(orthx, orthy, insideX3, insideY3);
+    95	  insideSide3 = distance(orthx, orthy, insideX2, insideY2);
+    96	
+    97	  //Calculates each angle of the inside triangle
+    98	  inAngleA = findAngle(insideSide2, insideSide3, insideSide1);
+    99	  inAngleB = findAngle(insideSide3, insideSide1, insideSide2);
+   100	  inAngleC = findAngle(insideSide1, insideSide2, insideSide3);
+   101	  
+   102	  //Outputs calculated values as outlined in the lab
+   103	  output(inAngleA, inAngleB, inAngleC, orthx, orthy);
+   104	
+   105	  return 0;
+   106	}
+   107	
+   108	/***************************************************************************
+   109	*
+   110	*  Function Information
+   111	*
+   112	*  Name of Function: inputXCord
+   113	*
+   114	*  Function Return Type: double
+   115	*
+   116	*  Parameters (list data type, name, and comment one per line):
+   117	*    1. int number the point number (like 1 for point 1)
+   118	*
+   119	*  Function Description: This function prompts the user and allows the user 
+   120	*  to input the desired x-coordinate
+   121	*
+   122	***************************************************************************/
+   123	double inputXCord(int number)
+   124	{
+   125	  double xCord; //user input for the xCord
+   126	  
+   127	  //prints a statement to prompts for the year number
+   128	  printf("Enter point #%d -> ", number);
+   129	  scanf("%lf ", &xCord);
+   130	  
+   131	  return(xCord);
+   132	}
+   133	
+   134	/***************************************************************************
+   135	*
+   136	*  Function Information
+   137	*
+   138	*  Name of Function: inputYCord
+   139	*
+   140	*  Function Return Type: double
+   141	*
+   142	*  Parameters (list data type, name, and comment one per line):
+   143	*    1. NA
+   144	*
+   145	*  Function Description: This function allows the user 
+   146	*  to input the desired y-coordinate
+   147	*
+   148	***************************************************************************/
+   149	double inputYCord()
+   150	{
+   151	  double yCord; //user input for the yCord
+   152	  
+   153	  //scans the 2nd number for yCord on the same line so no prompt print statement is needed
+   154	  scanf("%lf", &yCord);
+   155	  
+   156	  return(yCord);
+   157	}
+   158	
+   159	/***************************************************************************
+   160	*
+   161	*  Function Information
+   162	*
+   163	*  Name of Function: orthoCenter
+   164	*
+   165	*  Function Return Type: double
+   166	*
+   167	*  Parameters (list data type, name, and comment one per line):
+   168	*    1. double cord1 This coordinate of the 1st point
+   169	*    2. double cord2 This coordinate of the 2nd point
+   170	*    3. double cord3 This coordinate of the 3rd point
+   171	*    4. double angleA The first angle of the triangle
+   172	*    5. double angleB The second angle of the triangle
+   173	*    6. double angleC The third angle of the triangle
+   174	*
+   175	*  Function Description: This function calculates a coordinate value of orthocenter 
+   176	*  either x or y
+   177	*  Formula: x = (x1 * tan(A) + x2 * tan(B) + x3 * tan(C)) / (tan(A) + tan(B) + tan(C))
+   178	*  x can be interchanged with y for the y varient
+   179	*
+   180	***************************************************************************/
+   181	double orthoCenter(double cord1, double cord2, double cord3, double angleA, double angleB, double angleC)
+   182	{
+   183	  double val1; //(x1 * tan(A) + x2 * tan(B) + x3 * tan(C)) (can be interchanged with y)
+   184	  double val2; //(tan(A) + tan(B) + tan(C)) (can be interchanged with y)
+   185	
+   186	  //Use (M_PI / 180) to convert from degrees to radian to use in tan function
+   187	  val1 = cord1 * tan(angleA * (M_PI / 180)) + cord2 * tan(angleB * (M_PI / 180)) + cord3 * tan(angleC * (M_PI / 180));
+   188	  val2 = tan(angleA * (M_PI / 180)) + tan(angleB * (M_PI / 180)) + tan(angleC * (M_PI / 180)); 
+   189	  return(val1 / val2);
+   190	}
+   191	
+   192	/***************************************************************************
+   193	*
+   194	*  Function Information
+   195	*
+   196	*  Name of Function: distance
+   197	*
+   198	*  Function Return Type: double
+   199	*
+   200	*  Parameters (list data type, name, and comment one per line):
+   201	*    1. double xCord1 // This x-coordinate of the 1st point
+   202	*    2. double yCord1 // This y-coordinate of the 1st point
+   203	*    3. double xCord2 // This x-coordinate of the 2nd point
+   204	*    4. double xCord2 // This x-coordinate of the 2nd point
+   205	*
+   206	*  Function Description: This function takes 2 points x and y cooridates and finds
+   207	*  the distance between the representing a side of the triangle using the distance
+   208	*  formula distance = sqrt((X2 - X1)^2 + (Y2 - Y1)^2)
+   209	*
+   210	***************************************************************************/
+   211	double distance(double xCord1, double yCord1, double xCord2, double yCord2)
+   212	{
+   213	  //distance = sqrt((X2 - X1)^2 + (Y2 - Y1)^2)
+   214	  return(sqrt(pow(xCord2 - xCord1, 2) + pow(yCord2 - yCord1, 2))); 
+   215	}
+   216	
+   217	/***************************************************************************
+   218	*
+   219	*  Function Information
+   220	*
+   221	*  Name of Function: findAngle
+   222	*
+   223	*  Function Return Type: double
+   224	*
+   225	*  Parameters (list data type, name, and comment one per line):
+   226	*    1. double sideA length of the 1st side
+   227	*    2. double sideB length of the 2nd side
+   228	*    3. double sideC length of the 3rd side
+   229	*
+   230	*  Function Description: This function finds an angle of the triangle using the law of cosines
+   231	*  Formulas: C = cos-1((a^2 + b^2 - c^2) / (2ab)), A = cos-1((b^2 + c^2 - a^2) / (2bc))
+   232	*  B = cos-1((c^2 + a^2 - b^2) / (2ca))
+   233	***************************************************************************/
+   234	double findAngle(double sideA, double sideB, double sideC)
+   235	{
+   236	  //180 / M_PI converts radian output to degrees
+   237	  return((180 / M_PI) * acos((sideA * sideA + sideB * sideB - (sideC * sideC)) / (2.0 * sideA * sideB)));
+   238	}
+   239	
+   240	/***************************************************************************
+   241	*
+   242	*  Function Information
+   243	*
+   244	*  Name of Function: insideCords
+   245	*
+   246	*  Function Return Type: void
+   247	*
+   248	*  Parameters (list data type, name, and comment one per line):
+   249	*    1. double side1 length of the 1st side
+   250	*    2. double side2 length of the 2nd side
+   251	*    3. double side3 length of the 3rd side
+   252	*    4. double xCord1 user enter x coordinate of the 1st point
+   253	*    5. double xCord2 user enter x coordinate of the 2nd point
+   254	*    6. double xCord3 user enter x coordinate of the 3rd point
+   255	*    7. double yCord1 user enter y coordinate of the 1st point
+   256	*    8. double yCord2 user enter y coordinate of the 2nd point
+   257	*    9. double yCord3 user enter y coordinate of the 3rd point
+   258	*    10. double *insideX2 x component of the 2nd point of the inside triangle passed by address
+   259	*    11. double *insideX3 x component of the 3rd point of the inside triangle passed by address
+   260	*    12. double *insideY2 y component of the 2nd point of the inside triangle passed by address
+   261	*    13. double *insideY3 y component of the 3rd point of the inside triangle passed by address
+   262	*
+   263	*  Function Description: This function finds the coordinates of the inside triangle by checking
+   264	*  which inner triangle has the largest outside side and sets the appropriate values to the inside
+   265	*  triangle coordinates
+   266	***************************************************************************/
+   267	void insideCords(double side1, double side2, double side3, double xCord1, double xCord2, double xCord3, double yCord1, double yCord2, double yCord3, double *insideX2, double *insideX3, double *insideY2, double *insideY3)
+   268	{
+   269	  //if side 1 is largest
+   270	  if (side1 >= side3 && side1 >= side2)
+   271	  {
+   272	    *insideX2 = xCord2;
+   273	    *insideX3 = xCord3;
+   274	    *insideY2 = yCord2;
+   275	    *insideY3 = yCord3;
+   276	  }
+   277	  //if side 2 is largest
+   278	  else if (side2 >= side3)
+   279	  {
+   280	    *insideX2 = xCord1;
+   281	    *insideX3 = xCord3;
+   282	    *insideY2 = yCord1;
+   283	    *insideY3 = yCord3;
+   284	  }
+   285	  else //if side 3 is the largest
+   286	  {
+   287	    *insideX2 = xCord1;
+   288	    *insideX3 = xCord2;
+   289	    *insideY2 = yCord1;
+   290	    *insideY3 = yCord2;
+   291	  }
+   292	}
+   293	
+   294	/***************************************************************************
+   295	*
+   296	*  Function Information
+   297	*
+   298	*  Name of Function: sideType
+   299	*
+   300	*  Function Return Type: int
+   301	*
+   302	*  Parameters (list data type, name, and comment one per line):
+   303	*    1. double angleA the 1st angle of the triangle
+   304	*    2. double angleB the 2nd angle of the triangle
+   305	*    3. double angleC the 3rd angle of the triangle
+   306	*
+   307	*  Function Description: This function determines what type of triangle a triangle is given
+   308	*  that triangle's passed in angle values, 1 is return for an equilateral, 2 for an isosceles, 
+   309	*  3 for scalene
+   310	* 
+   311	***************************************************************************/
+   312	int sideType(double angleA, double angleB, double angleC)
+   313	{
+   314	  int triangleType; //type of triangle that is returned 1 for equilateral, 2 for isosceles, 3 for scalene
+   315	  if((angleA + .001 >= angleB && angleA - .001 <= angleB) && (angleC + .001 >= angleB && angleC - .001 <= angleB)) //Angles are all equal within an acceptable range
+   316	  {
+   317	    triangleType = 1;
+   318	  }
+   319	  else if((angleA + .001 >= angleB && angleA - .001 <= angleB) || (angleC + .001 >= angleB && angleC - .001 <= angleB) || (angleC + .001 >= angleA && angleC - .001 <= angleA))
+   320	  {
+   321	    triangleType = 2;
+   322	  }
+   323	  else
+   324	  {
+   325	    triangleType = 3;
+   326	  }
+   327	  
+   328	  return(triangleType);
+   329	}
+   330	
+   331	/***************************************************************************
+   332	*
+   333	*  Function Information
+   334	*
+   335	*  Name of Function: sideType
+   336	*
+   337	*  Function Return Type: int
+   338	*
+   339	*  Parameters (list data type, name, and comment one per line):
+   340	*    1. double maxAngle the largest angle of the triangle being evaluated
+   341	*
+   342	*  Function Description: This function determines what type of triangle a triangle is given
+   343	*  that triangle's passed in angle values, 1 is for acute (<90) , 2 for right (90), and
+   344	*  3 is for obtuse (>90)
+   345	* 
+   346	***************************************************************************/
+   347	int angleType(double maxAngle)
+   348	{
+   349	  int angleType; //type of angled triangle 1 for acute (<90), 2 for right (90), and 3 for obtuse (>90)
+   350	  if(maxAngle <= 90.001 && maxAngle >= 89.999) //right triangle using the error bound of .001
+   351	  {
+   352	    angleType = 2;
+   353	  }
+   354	  else if(maxAngle > 90) //obtuse
+   355	  {
+   356	    angleType = 3;
+   357	  }
+   358	  else //acute
+   359	  {
+   360	    angleType = 1;
+   361	  }
+   362	  return(angleType);
+   363	}
+   364	
+   365	/***************************************************************************
+   366	*
+   367	*  Function Information
+   368	*
+   369	*  Name of Function: output
+   370	*
+   371	*  Function Return Type: void
+   372	*
+   373	*  Parameters (list data type, name, and comment one per line):
+   374	*    1. double angleA the first angle of the inside triangle
+   375	*    2. double angleB The second angle of the inside triangle
+   376	*    3. double angleC The third angle of the inside triangle
+   377	*    4. orthX the x component of the orthocenter
+   378	*    5. orthY the y component of the orthocenter
+   379	*
+   380	*  Function Description: This function outputs desided values using conditional statement in
+   381	*  the format outlined in the lab description
+   382	* 
+   383	***************************************************************************/
+   384	void output(double angleA, double angleB, double angleC, double orthX, double orthY)
+   385	{
+   386	  double maxAngle; //largest angle in the triangle used to check for angle type
+   387	
+   388	  //To prevent the printing of -0.00 .001 error is applied to  orth coordinates
+   389	  if(orthX >= -.001 && orthX <= .001)
+   390	  {
+   391	    orthX = 0.0;
+   392	  }
+   393	  if(orthY >= -.001 && orthY <= .001)
+   394	  {
+   395	    orthY = 0.0;
+   396	  }
+   397	
+   398	  printf("\nCoordinates or orthocenter: %.2lf, %.2lf", orthX, orthY);
+   399	  printf("\nInternal triangle angles: ");
+   400	  
+   401	  if(angleA <= angleB && angleA <= angleC) // A < B and A < C
+   402	  {
+   403	    printf("%.1lf, ", angleA);
+   404	
+   405	    if(angleB <= angleC) //A < B < C
+   406	    {
+   407	      printf("%.1lf, %.1lf", angleB, angleC);
+   408	      maxAngle = angleC;
+   409	    }
+   410	    else // A < C < B
+   411	    {
+   412	      printf("%.1lf, %.1lf", angleC, angleB);
+   413	      maxAngle = angleB;
+   414	    }
+   415	  }
+   416	  else if (angleB <= angleA && angleB <= angleC) // B < A and B < C
+   417	  {
+   418	    printf("%.1lf, ", angleB);
+   419	
+   420	    if(angleA <= angleC) // B < A < C
+   421	    {
+   422	      printf("%.1lf, %.1lf", angleA, angleC);
+   423	      maxAngle = angleC;
+   424	    }
+   425	    else // B < C < A
+   426	    {
+   427	      printf("%.1lf, %.1lf", angleC, angleA);
+   428	      maxAngle = angleA;
+   429	    }
+   430	  }
+   431	  else // C < A and C < b
+   432	  {
+   433	    printf("%.1lf, ", angleC);
+   434	
+   435	    if(angleA <= angleB) // C < A < B
+   436	    {
+   437	      printf("%.1lf, %.1lf", angleA, angleB);
+   438	      maxAngle = angleB;
+   439	    }
+   440	    else // C < B < A
+   441	    {
+   442	      printf("%.1lf, %.1lf", angleB, angleA);
+   443	      maxAngle = angleA;
+   444	    }
+   445	  }
+   446	
+   447	  printf("\nTriangle Type: ");
+   448	
+   449	  switch(sideType(angleA, angleB, angleC))
+   450	  {
+   451	    case 1 : 
+   452	      printf("Equilateral ");
+   453	      break;
+   454	    case 2 :
+   455	      printf("Isosceles ");
+   456	      break;
+   457	    default :
+   458	      printf("Scalene ");
+   459	  }
+   460	
+   461	  switch(angleType(maxAngle))
+   462	  {
+   463	    case 1 : 
+   464	      printf("acute");
+   465	      break;
+   466	    case 2 :
+   467	      printf("right");
+   468	      break;
+   469	    default :
+   470	      printf("obtuse");
+   471	  }
+   472	  printf("\n");
+   473	}

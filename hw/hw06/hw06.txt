@@ -1,0 +1,479 @@
+The following program submission has been recorded:
+
+Student: jferlazz
+Class: CS159
+Section: 25336
+Assignment: hw06.c
+Submission: 2021-04-10 19:27
+
+If the above is incorrect, you are responsible for resubmitting the assignment or seeking assistance from a course staff member prior to the due date! Assignments will never be accepted by e-mail.
+
+If this is for a lab assignment, only one member must be designated to make a submission for the group.  Graders will not evaluate submissions from multiple group members to determine which effort you actually want graded.
+
+*** Please do not reply to this email ***
+
+The contents of the submission:
+     1	/***************************************************************************
+     2	*
+     3	*  Programmers and Purdue Email Addresses:
+     4	*  1. jferlazz@purdue.edu
+     5	*
+     6	*  Homework #: 6
+     7	*
+     8	*  Academic Integrity Statement:
+     9	*
+    10	*  We have not used source code obtained from any other unauthorized source,
+    11	*  either modified or unmodified.  Neither have we provided access to our code
+    12	*  to another. The effort we are submitting is our own original work.
+    13	*
+    14	*  Day, Time, Location of Lab: Friday, 2:30pm, HAMP 3144
+    15	*
+    16	*  Program Description:
+    17	*
+    18	*  This program takes user input on a list of 10 years and a desired day of the week to
+    19	*  start at. This program then finds which months of the first year start on the desired day
+    20	*  then the program checks the next year and new "desired day" is one more than the previous
+    21	*  (if over 6 it goes back to 0). This continues until all 10 years have been check
+    22	*
+    23	***************************************************************************/
+    24	
+    25	#include <stdio.h>
+    26	
+    27	#define MONTHS 12 //Months in a year
+    28	#define YEARS 10 //Number of inputted years
+    29	
+    30	//Global Declarations
+    31	void printApplicableMonths(int[], int);
+    32	void monthCheck(int, int);
+    33	int monthStartDay(int, int, int, int);
+    34	int leapYearCheck(int);
+    35	int dayOfWeekLastYear(int);
+    36	void inputYears(int[]);
+    37	int inputDay(void);
+    38	void printDay(int);
+    39	void printMonth(int);
+    40	void output(int[], int);
+    41	
+    42	int main(void) 
+    43	{
+    44	  //Local Declaration
+    45	  int years[YEARS]; //List of 10 user inputted years
+    46	  int desiredDay; //Desired day of the week number the user wishes to start on
+    47	
+    48	  //Executable Statements
+    49	
+    50	  //Takes input from the user
+    51	  inputYears(years);
+    52	  desiredDay = inputDay();
+    53	
+    54	  //Outputs data
+    55	  output(years, desiredDay);
+    56	
+    57	  return 0;
+    58	}
+    59	
+    60	/***************************************************************************
+    61	*
+    62	*  Function Information
+    63	*
+    64	*  Name of Function: printApplicableMonths
+    65	*
+    66	*  Function Return Type: void
+    67	*
+    68	*  Parameters (list data type, name, and comment one per line):
+    69	*    1. int months[] \\list of month starting days for a given year
+    70	*    2. int desiredDay \\The desired day of the week being checked
+    71	*
+    72	*  Function Description: This function checks which months in a year begin with the
+    73	*  desired day
+    74	*
+    75	***************************************************************************/
+    76	void printApplicableMonths(int months[], int desiredDay)
+    77	{
+    78	  int count; //incrimentor for the for loop
+    79	  int prints; //tracks the number of prints
+    80	
+    81	  prints = 0;
+    82	
+    83	  for(count = 0; count < MONTHS; count++) //goes through each month
+    84	  {
+    85	    if(months[count] == desiredDay) //If the month starts on the desired day
+    86	    {
+    87	      printf(" ");
+    88	      printMonth(count + 1); //the loop goes from 0-11, but month go from 1-12
+    89	      prints++; //tracks the number of time a month is printed
+    90	    }
+    91	  }
+    92	  if (prints == 0) //if no months meet the test case
+    93	  {
+    94	    printf(" None");
+    95	  }
+    96	}
+    97	
+    98	/***************************************************************************
+    99	*
+   100	*  Function Information
+   101	*
+   102	*  Name of Function: monthCheck
+   103	*
+   104	*  Function Return Type: void
+   105	*
+   106	*  Parameters (list data type, name, and comment one per line):
+   107	*    1. int year \\The year whose months are being checked
+   108	*    2. int desiredDay \\The desired day of the week being checked
+   109	*
+   110	*  Function Description: This function checks which months in a year begin with the
+   111	*  desired day
+   112	*
+   113	***************************************************************************/
+   114	
+   115	void monthCheck(int year, int desiredDay)
+   116	{
+   117	  int months[MONTHS]; //list to track the starting day of each month
+   118	  int count; //incrimentor for the for loop
+   119	  int yearStartDay; //start day of the current year
+   120	  int isLeapYear; //whether the year is a leap year or not
+   121	
+   122	  isLeapYear = leapYearCheck(year);
+   123	  yearStartDay = dayOfWeekLastYear(year) + 1;
+   124	
+   125	  for (count = 0; count < MONTHS; count++) //loops through each month
+   126	  {
+   127	    //the loop goes from 0-11, but month go from 1-12 hence count + 1
+   128	    months[count] = monthStartDay(year, count + 1, yearStartDay, isLeapYear);
+   129	  }
+   130	  printApplicableMonths(months, desiredDay); //Sub function that prints applicable months
+   131	}
+   132	
+   133	/***************************************************************************
+   134	*
+   135	*  Function Information
+   136	*
+   137	*  Name of Function: monthStartDay
+   138	*
+   139	*  Function Return Type: int
+   140	*
+   141	*  Parameters (list data type, name, and comment one per line):
+   142	*    1. int year \\The year whose months are being checked
+   143	*    2. int month \\The month being checked (1 for January, 2 for February, etc)
+   144	*    3. int yearStartDay \\The day of the week which the year starts on
+   145	*    4. int isLeapYear \\Whether or not a year is a leapYear (0 if no, 1 if yes)
+   146	*
+   147	*  Function Description: This function checks which months in a year begin with the
+   148	*  desired day
+   149	*
+   150	***************************************************************************/
+   151	
+   152	int monthStartDay(int year, int month, int yearStartDay, int isLeapYear)
+   153	{
+   154	  int totalDays; //days into the yeah the month being checked starts on
+   155	  int monthStartDay; //day of the week the month starts on
+   156	
+   157	  totalDays = 0;
+   158	  //switch conditional to determine how many days into the year a given month starts on
+   159	  //Higher case numbers include the addition from other months before it
+   160	  switch (month)
+   161	  {
+   162	    case 12:
+   163	        totalDays += 30;
+   164	    case 11:
+   165	        totalDays += 31;
+   166	    case 10:
+   167	        totalDays += 30;
+   168	    case 9:
+   169	        totalDays += 31;
+   170	    case 8:
+   171	        totalDays += 31;
+   172	    case 7:
+   173	        totalDays += 30;
+   174	    case 6:
+   175	        totalDays += 31;
+   176	    case 5:
+   177	        totalDays += 30;
+   178	    case 4:
+   179	        totalDays += 31;
+   180	    case 3:
+   181	        totalDays += 28 + isLeapYear;
+   182	    case 2:
+   183	        totalDays += 31; //30 since it starts on the first day so 31 - 1 = 30
+   184	    case 1:
+   185	        break;
+   186	  }
+   187	
+   188	  //Math to find the months start day
+   189	  monthStartDay = yearStartDay + (totalDays % 7);
+   190	  monthStartDay = monthStartDay % 7; //makes sure the number is from 0-6
+   191	  
+   192	  return(monthStartDay);
+   193	}
+   194	
+   195	/***************************************************************************
+   196	*
+   197	*  Function Information
+   198	*
+   199	*  Name of Function: leapYearCheck
+   200	*
+   201	*  Function Return Type: int
+   202	*
+   203	*  Parameters (list data type, name, and comment one per line):
+   204	*    1. int year \\The year being checked
+   205	*
+   206	*  Function Description: This function checks if a year is a leap year or not
+   207	*  returns a 1 if yes and 0 if no
+   208	*
+   209	***************************************************************************/
+   210	
+   211	int leapYearCheck(int year)
+   212	{
+   213	  int isLeapYear; //1 is a leap year 0 if not
+   214	  
+   215	  if(year % 4 == 0)
+   216	  {
+   217	    if(year % 100 == 0)
+   218	    {
+   219	      if(year % 400 == 0)
+   220	      {
+   221	        isLeapYear = 1; //Century leap years that are divisable by 400 ie 2000 (is a leap year)
+   222	      }
+   223	      else
+   224	      {
+   225	        isLeapYear = 0; //Turn of the centurys not divisable by 400 ie 1900 (is NOT a leap year)
+   226	      }
+   227	    }
+   228	    else
+   229	    {
+   230	      isLeapYear = 1; //normal leap years not at the beginning of a century ie 2004
+   231	    }
+   232	  }
+   233	  else
+   234	  {
+   235	    isLeapYear = 0; //not a leap year
+   236	  }
+   237	  
+   238	  return(isLeapYear);
+   239	}
+   240	
+   241	/***************************************************************************
+   242	*
+   243	*  Function Information
+   244	*
+   245	*  Name of Function: dayOfWeekLastYear
+   246	*
+   247	*  Function Return Type: int
+   248	*
+   249	*  Parameters (list data type, name, and comment one per line):
+   250	*    1. int year the desired year entered by the user
+   251	*
+   252	*  Function Description: This function calculates the weekday the last year ended on
+   253	*
+   254	***************************************************************************/
+   255	
+   256	int dayOfWeekLastYear(int year)
+   257	{
+   258	  return(((year - 1) * 365 + ((year - 1) / 4) - ((year - 1) / 100) + ((year - 1) / 400)) % 7);
+   259	}
+   260	
+   261	/***************************************************************************
+   262	*
+   263	*  Function Information
+   264	*
+   265	*  Name of Function: inputYear
+   266	*
+   267	*  Function Return Type: void
+   268	*
+   269	*  Parameters (list data type, name, and comment one per line):
+   270	*    1. int years[] \\list of year values that will be filled with user input
+   271	*
+   272	*  Function Description: This function allows the user to input 10 years to a list called
+   273	*  years these values are passed back by address
+   274	*
+   275	***************************************************************************/
+   276	
+   277	void inputYears(int years[])
+   278	{
+   279	  int count; //incrimentor for the for loop
+   280	  
+   281	  printf("Enter 10 years [1700 - 2100] -> ");
+   282	  
+   283	  for (count = 0; count < YEARS; count++)
+   284	  {
+   285	    scanf("%d", &years[count]);
+   286	  }
+   287	}
+   288	
+   289	/***************************************************************************
+   290	*
+   291	*  Function Information
+   292	*
+   293	*  Name of Function: inputDay
+   294	*
+   295	*  Function Return Type: int
+   296	*
+   297	*  Parameters (list data type, name, and comment one per line):
+   298	*    1. NA
+   299	*
+   300	*  Function Description: This function allows the user to input the desired
+   301	*  day of the week
+   302	*
+   303	***************************************************************************/
+   304	
+   305	int inputDay(void)
+   306	{
+   307	  int day; //user each day of the week
+   308	
+   309	  day = 0;
+   310	  do
+   311	  {
+   312	    if(day < 0 || day > 6)
+   313	    {
+   314	      printf("\nError! Day of the week must be 0 to 6.\n\n");
+   315	    }
+   316	    printf("Enter day of the week -> ");
+   317	    scanf("%d", &day);
+   318	  } while (day < 0 || day > 6);
+   319	  return(day);
+   320	}
+   321	
+   322	/***************************************************************************
+   323	*
+   324	*  Function Information
+   325	*
+   326	*  Name of Function: output
+   327	*
+   328	*  Function Return Type: void
+   329	*
+   330	*  Parameters (list data type, name, and comment one per line):
+   331	*    1. int years[] \\List of 10 years to be evaluated
+   332	*    2. int day \\user entered desired day
+   333	*
+   334	*  Function Description: This function begins to produce output as outlined in the lab, it calls
+   335	*  subfunctions to produce output and excute computations as well
+   336	*
+   337	***************************************************************************/
+   338	
+   339	void output(int years[], int day)
+   340	{
+   341	  int count; //incrimentor for the for loop
+   342	  
+   343	  printf("\nDesired day of the week: ");
+   344	  printDay(day);
+   345	  printf("\n");
+   346	  
+   347	  for(count = 0; count < YEARS; count++)
+   348	  {
+   349	    printf("Months in %d starting on ", years[count]);
+   350	    printDay(day);
+   351	    printf(":");
+   352	
+   353	    monthCheck(years[count], day);
+   354	    printf("\n");
+   355	    
+   356	    day++; //for checking the next day for the next year
+   357	    day = day % 7; //makes sure the day is from 0-6
+   358	  }
+   359	}
+   360	
+   361	/***************************************************************************
+   362	*
+   363	*  Function Information
+   364	*
+   365	*  Name of Function: printDay
+   366	*
+   367	*  Function Return Type: void
+   368	*
+   369	*  Parameters (list data type, name, and comment one per line):
+   370	*    2. int day \\The weekday that should be printed
+   371	*
+   372	*  Function Description: This function prints the weekday that corrisponds to the
+   373	*  sent in number 0 for sunday, 1 for monday ... 6 for Saturday
+   374	*
+   375	***************************************************************************/
+   376	
+   377	void printDay(int day)
+   378	{
+   379	  //switch conditional to print a given day
+   380	  switch (day)
+   381	  {
+   382	    case 0: 
+   383	      printf("Sunday");
+   384	      break;
+   385	    case 1: 
+   386	      printf("Monday");
+   387	      break;
+   388	    case 2: 
+   389	      printf("Tuesday");
+   390	      break;
+   391	    case 3: 
+   392	      printf("Wednesday");
+   393	      break;
+   394	    case 4: 
+   395	      printf("Thursday");
+   396	      break;
+   397	    case 5: 
+   398	      printf("Friday");
+   399	      break;
+   400	    case 6: 
+   401	      printf("Saturday");
+   402	      break;
+   403	  }
+   404	}
+   405	
+   406	/***************************************************************************
+   407	*
+   408	*  Function Information
+   409	*
+   410	*  Name of Function: printMonth
+   411	*
+   412	*  Function Return Type: void
+   413	*
+   414	*  Parameters (list data type, name, and comment one per line):
+   415	*    2. int month \\The month that should be printed
+   416	*
+   417	*  Function Description: This function prints a month based on the sent in month number
+   418	*  1 for January, 2 for February ... 12 for December
+   419	*
+   420	***************************************************************************/
+   421	
+   422	void printMonth(int month)
+   423	{
+   424	  //switch conditional to print a given month
+   425	  switch (month)
+   426	  {
+   427	    case 1: 
+   428	      printf("January");
+   429	      break;
+   430	    case 2: 
+   431	      printf("February");
+   432	      break;
+   433	    case 3: 
+   434	      printf("March");
+   435	      break;
+   436	    case 4: 
+   437	      printf("April");
+   438	      break;
+   439	    case 5: 
+   440	      printf("May");
+   441	      break;
+   442	    case 6: 
+   443	      printf("June");
+   444	      break;
+   445	    case 7: 
+   446	      printf("July");
+   447	      break;
+   448	    case 8: 
+   449	      printf("August");
+   450	      break;
+   451	    case 9: 
+   452	      printf("September");
+   453	      break;
+   454	    case 10: 
+   455	      printf("October");
+   456	      break;
+   457	    case 11: 
+   458	      printf("November");
+   459	      break;
+   460	    case 12: 
+   461	      printf("December");
+   462	      break;
+   463	  }
+   464	}

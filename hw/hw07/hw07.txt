@@ -1,0 +1,377 @@
+The following program submission has been recorded:
+
+Student: jferlazz
+Class: CS159
+Section: 25336
+Assignment: hw07.c
+Submission: 2021-04-26 22:35
+
+If the above is incorrect, you are responsible for resubmitting the assignment or seeking assistance from a course staff member prior to the due date! Assignments will never be accepted by e-mail.
+
+If this is for a lab assignment, only one member must be designated to make a submission for the group.  Graders will not evaluate submissions from multiple group members to determine which effort you actually want graded.
+
+*** Please do not reply to this email ***
+
+The contents of the submission:
+     1	/***************************************************************************
+     2	*
+     3	*  Programmers and Purdue Email Addresses:
+     4	*  1. jferlazz@purdue.edu
+     5	*
+     6	*  Homework #: 7
+     7	*
+     8	*  Academic Integrity Statement:
+     9	*
+    10	*  We have not used source code obtained from any other unauthorized source,
+    11	*  either modified or unmodified.  Neither have we provided access to our code
+    12	*  to another. The effort we are submitting is our own original work.
+    13	*
+    14	*  Day, Time, Location of Lab: Friday, 2:30pm, HAMP 3144
+    15	*
+    16	*  Program Description:
+    17	*
+    18	*  This program takes input on whether the user would like to sort data based on
+    19	* how long in the number sequence 1 is reached (option 1) and the first power of 
+    20	* two value in that number sequence (option 2), and sorts a list of up to 35 based
+    21	* on that option. The program then output as outlined in the lav
+    22	*
+    23	***************************************************************************/
+    24	
+    25	#include <stdio.h>
+    26	
+    27	#define SIZE 35
+    28	
+    29	int inputOption(void);
+    30	void inputNums(int[]);
+    31	void sortArray(int, int[]);
+    32	void sortSubArray(int[], int, int);
+    33	int nextNumber(int);
+    34	int powerValue(int);
+    35	int countValue(int);
+    36	int isPowerOfTwo(int);
+    37	void output(int[], int, int);
+    38	
+    39	int main(void) 
+    40	{
+    41	  int option; //1 for sort by count 2 for sort by power of 2
+    42	  int nums[SIZE]; //array of inputted values
+    43	
+    44	  //Takes user input
+    45	  option = inputOption();
+    46	  inputNums(nums);
+    47	  
+    48	  sortArray(option, nums);
+    49	  
+    50	  return 0;
+    51	}
+    52	
+    53	/***************************************************************************
+    54	*
+    55	*  Function Information
+    56	*
+    57	*  Name of Function: inputOption
+    58	*
+    59	*  Function Return Type: int
+    60	*
+    61	*  Parameters (list data type, name, and comment one per line):
+    62	*    1. NA
+    63	*
+    64	*  Function Description: This function takes user input on the type of sort the user
+    65	*  would like to do. 1 for sorting by count, 2 for sorting by power of 2
+    66	*
+    67	***************************************************************************/
+    68	int inputOption(void)
+    69	{
+    70	  int input; //user inputted option
+    71	  do 
+    72	  {
+    73	    printf("Enter sorting option (1) count or (2) power of two -> ");
+    74	    scanf("%d", &input);
+    75	    if(input != 1 && input != 2)
+    76	    {
+    77	      printf("\nError! Enter option 1 or 2 only!\n\n");
+    78	    }
+    79	  } while (input != 1 && input != 2);
+    80	  
+    81	  return(input);
+    82	}
+    83	
+    84	/***************************************************************************
+    85	*
+    86	*  Function Information
+    87	*
+    88	*  Name of Function: inputNums
+    89	*
+    90	*  Function Return Type: void
+    91	*
+    92	*  Parameters (list data type, name, and comment one per line):
+    93	*    1. int[] nums //list of user inputted data
+    94	*
+    95	*  Function Description: This function takes user input on numbers to be sorted up to 35
+    96	*  integer values
+    97	*
+    98	***************************************************************************/
+    99	void inputNums(int nums[])
+   100	{
+   101	  int count; //incrimentor for the for loop
+   102	  int store; //int the current number being scanned
+   103	  
+   104	  store = 0;
+   105	
+   106	  printf("Enter up to 35 integer values -> ");
+   107	  
+   108	  for (count = 0; count < 35 && store >= 0; count++)
+   109	  {
+   110	    scanf("%d", &nums[count]);
+   111	    store = nums[count];
+   112	  }
+   113	}
+   114	
+   115	/***************************************************************************
+   116	*
+   117	*  Function Information
+   118	*
+   119	*  Name of Function: sortArray
+   120	*
+   121	*  Function Return Type: void
+   122	*
+   123	*  Parameters (list data type, name, and comment one per line):
+   124	*     1. int option //type of sorting 1 for count, 2 for power of 2
+   125	*     2. int[] nums //list of user entered numbers
+   126	*    
+   127	*
+   128	*  Function Description: This function complies the list of numbers into a new array
+   129	*  and calls the sortsubarray function to sort the array
+   130	*
+   131	***************************************************************************/
+   132	void sortArray(int option, int nums[])
+   133	{
+   134	  int sortedList[SIZE]; //array of sorted numbers
+   135	  int count; //incrimentor
+   136	  int size; //size of the array
+   137	
+   138	  size = 0;
+   139	
+   140	  for (count = 0; count < 35 && nums[count] != -1; count++)
+   141	  {
+   142	    sortedList[count] = nums[count];
+   143	    size++;
+   144	  }
+   145	  sortSubArray(sortedList, size, option);
+   146	
+   147	  output(sortedList, size, option);
+   148	}
+   149	
+   150	/***************************************************************************
+   151	*
+   152	*  Function Information
+   153	*
+   154	*  Name of Function: sortSubArray
+   155	*
+   156	*  Function Return Type: void
+   157	*
+   158	*  Parameters (list data type, name, and comment one per line):
+   159	*     1. int[] input //array of integer values
+   160	*     2. int size //size of the array
+   161	*     3. int option //type of sorting 1 for count, 2 for power of 2
+   162	*    
+   163	*
+   164	*  Function Description: This function conducts selection sort on the sent in
+   165	*  array using values from  either the powerValue function and the countValue function
+   166	*
+   167	***************************************************************************/
+   168	void sortSubArray(int input[], int size, int option)
+   169	{
+   170	  int small; //current smallest number
+   171	  int temp; //store temperary data so it doesn't get erased
+   172	  int current; //current index being looked at
+   173	  int step; //incrimention for the inner loop
+   174	
+   175	  for (current = 0; current < size - 1; current++)
+   176	  {
+   177	    small = current;
+   178	    if(option == 1)
+   179	    {
+   180	      for (step = current + 1; step < size; step++)
+   181	      {
+   182	        if(countValue(input[step]) < countValue(input[small]))
+   183	        {
+   184	          small = step;
+   185	        }
+   186	        else if(countValue(input[step]) == countValue(input[small]) && input[step] < input[small])
+   187	        {
+   188	          small = step;
+   189	        }
+   190	      }
+   191	      temp = input[current];
+   192	      input[current] = input[small];
+   193	      input[small] = temp;
+   194	    }
+   195	    else
+   196	    {
+   197	      for (step = current + 1; step < size; step++)
+   198	      {
+   199	        if(powerValue(input[step]) < powerValue(input[small]))
+   200	        {
+   201	          small = step;
+   202	        }
+   203	        else if(powerValue(input[step]) == powerValue(input[small]) && input[step] < input[small])
+   204	        {
+   205	          small = step;
+   206	        }
+   207	      }
+   208	      temp = input[current];
+   209	      input[current] = input[small];
+   210	      input[small] = temp;
+   211	    }
+   212	  }
+   213	}
+   214	
+   215	/***************************************************************************
+   216	*
+   217	*  Function Information
+   218	*
+   219	*  Name of Function: powerValue
+   220	*
+   221	*  Function Return Type: int
+   222	*
+   223	*  Parameters (list data type, name, and comment one per line):
+   224	*     1. int value //the number you wish to find the power of 2 value of
+   225	*    
+   226	*
+   227	*  Function Description: This function finds out what the power of 2 value of a 
+   228	*  number is
+   229	***************************************************************************/
+   230	int powerValue(int value)
+   231	{
+   232	  while (isPowerOfTwo(value) != 1)
+   233	  {
+   234	    value = nextNumber(value);
+   235	  }
+   236	  return(value);
+   237	}
+   238	
+   239	/***************************************************************************
+   240	*
+   241	*  Function Information
+   242	*
+   243	*  Name of Function: countValue
+   244	*
+   245	*  Function Return Type: int
+   246	*
+   247	*  Parameters (list data type, name, and comment one per line):
+   248	*     1. int value //the number you wish to find the count value of
+   249	*    
+   250	*
+   251	*  Function Description: This function finds out what the count value of a 
+   252	*  number is
+   253	***************************************************************************/
+   254	int countValue(int value)
+   255	{
+   256	  int number; //the number of times until 1 is reached
+   257	  number = 0;
+   258	
+   259	  while(value != 1)
+   260	  {
+   261	    value = nextNumber(value);
+   262	    number++;
+   263	  }
+   264	
+   265	  return(number);
+   266	}
+   267	
+   268	/***************************************************************************
+   269	*
+   270	*  Function Information
+   271	*
+   272	*  Name of Function: nextNumber
+   273	*
+   274	*  Function Return Type: int
+   275	*
+   276	*  Parameters (list data type, name, and comment one per line):
+   277	*     1. int value //the number you wish to the new number in the sequence of
+   278	*    
+   279	*
+   280	*  Function Description: This function finds out what the next number in the sequence
+   281	*  is if the number is even divide it by 2 and if odd multiply by 3 and add 1
+   282	***************************************************************************/
+   283	int nextNumber(int value)
+   284	{
+   285	  int output; //the next number in the sequence
+   286	  if(value % 2 == 0)
+   287	  {
+   288	    output = value / 2;
+   289	  }
+   290	  else
+   291	  {
+   292	    output = value * 3 + 1;
+   293	  }
+   294	  return(output);
+   295	}
+   296	
+   297	/***************************************************************************
+   298	*
+   299	*  Function Information
+   300	*
+   301	*  Name of Function: isPowerOfTwo
+   302	*
+   303	*  Function Return Type: int
+   304	*
+   305	*  Parameters (list data type, name, and comment one per line):
+   306	*     1. int value //the number you wish to find if it is a power of 2 or not
+   307	*    
+   308	*
+   309	*  Function Description: This function finds out if a value is a power of 2 or not (1 if it is 0 if not)
+   310	***************************************************************************/
+   311	int isPowerOfTwo(int value)
+   312	{
+   313	  int output; //if the number is a power of 2 (1) or not (1)
+   314	  output = 1;
+   315	  while(value > 1)
+   316	  {
+   317	    if (value % 2 != 0)
+   318	    {
+   319	      output = 0;
+   320	    }
+   321	    value /= 2;
+   322	  }
+   323	  return(output);
+   324	}
+   325	
+   326	/***************************************************************************
+   327	*
+   328	*  Function Information
+   329	*
+   330	*  Name of Function: output
+   331	*
+   332	*  Function Return Type: void
+   333	*
+   334	*  Parameters (list data type, name, and comment one per line):
+   335	*     1. int[] nums //array of sorted numbers
+   336	*     2. int size //size of the array
+   337	*     3. int option //type of sorting 1 for count, 2 for power of 2
+   338	*    
+   339	*
+   340	*  Function Description: This function outputs the data as outlined in the lab
+   341	***************************************************************************/
+   342	void output(int nums[], int size, int option)
+   343	{
+   344	  int count; //incrimentor for the for the loop
+   345	
+   346	  printf("\nSort data by ");
+   347	
+   348	  if(option == 1)
+   349	  {
+   350	    printf("count:");
+   351	  }
+   352	  else
+   353	  {
+   354	    printf("power of two:");
+   355	  }
+   356	
+   357	  for(count = 0; count < size; count++)
+   358	  {
+   359	    printf(" %d", nums[count]);
+   360	  }
+   361	  printf("\n");
+   362	}
